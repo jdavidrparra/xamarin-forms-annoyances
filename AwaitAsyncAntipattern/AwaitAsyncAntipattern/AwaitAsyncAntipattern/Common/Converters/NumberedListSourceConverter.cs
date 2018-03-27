@@ -1,5 +1,4 @@
 ﻿#region License
-
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -23,46 +22,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace AwaitAsyncAntipattern.Common.Converters
 {
-   #region Imports
+   using System;
+   using System.Collections.Generic;
+   using System.Globalization;
+   using ViewModels;
+   using Xamarin.Forms;
 
-   using System.Threading.Tasks;
-   using Utils;
-
-   #endregion
-
-   /// <remarks>
-   ///    Instantiated on the foreground thread.
-   /// </remarks>
-   public class SomeDevice : BaseDevice
+   public class NumberedListSourceConverter : IValueConverter
    {
-      private bool _isFeatureCreated;
+      public static readonly NumberedListSourceConverter Instance = new NumberedListSourceConverter();
 
-      public DeviceFeature Feature { get; set; }
-
-      // Occurs automatically as a part of the device start-up; cannot be controlled; occurs on the foreground thread
-      protected override async void RequestFeatureCreation()
+      public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
       {
-         // This while loop runs *forever*, since the device has unanticipated problems starting up.  
-         // Yet it is awaited on the foreground thread. So it stops the app entirely.  
-         // The user, meanwhile, can tap the keyboard at will, since the app is not technically “blocked”.
-         while (!_isFeatureCreated)
+         if (
+               value == null
+               ||
+               !(value is IList<IBalloonListViewModel> valueAsBalloonListViewModel)
+               ||
+               parameter == null
+               ||
+               !int.TryParse(parameter.ToString(), out var parameterAsInt)
+               ||
+               parameterAsInt > valueAsBalloonListViewModel.Count
+            )
          {
-            _isFeatureCreated = await CreateFeature().AwaitWithoutChangingContext();
+            return null;
          }
+
+         // ELSE SUCCESS
+         return valueAsBalloonListViewModel[parameterAsInt].SubList;
       }
 
-      private async Task<bool> CreateFeature()
+      public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
       {
-         await Task.Delay(1000);
-
-         // For demonstration purposes, this function always returns false.  
-         // This aggravates our example and causes errors.
-         return false;
+         throw new NotSupportedException();
       }
    }
 }

@@ -26,51 +26,44 @@
 
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
    #region Imports
 
-   using Utils;
+   using System.Threading.Tasks;
    using Xamarin.Forms;
+   using SharedCrossApp.Utils;
 
    #endregion
 
-   public class MyPage : ContentPage
+   public class Miscellaneous
    {
-      // private MyViewModel _viewModel;
-      private MyDeviceViewModel _viewModel;
-
-      public MyPage()
+      public Miscellaneous()
       {
-         var button = new Button
-         {
-            Text = "Start Up Device",
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
-         };
+         var str1 = ReadStream();
 
-         Content = button;
+         var str2 = string.Empty;
 
-         // BindingContextChanged += (s, e) => { _viewModel = BindingContext as MyViewModel; };
-         BindingContextChanged += (s, e) =>
-         {
-            _viewModel = BindingContext as MyDeviceViewModel;
+         Device.BeginInvokeOnMainThread(async () => str2 = await ReadStreamAsync().AwaitWithoutChangingContext());
 
-            if (_viewModel != null)
-            {
-               button.Command = _viewModel.RetryStartDeviceCommand;
-            }
-         };
+         var dataExists = false;
+         Device.BeginInvokeOnMainThread(async () => dataExists = await DataExists());
       }
 
-      // Async signature is legal here
-      protected override async void OnAppearing()
+      private string ReadStream()
       {
-         // This call then cascades into dozens of other awaits, all on the foreground thread.
-         if (_viewModel != null)
-         {
-            await _viewModel.InitializeViewModel().AwaitWithoutChangingContext();
-         }
+         return string.Empty;
+      }
+
+      private Task<string> ReadStreamAsync()
+      {
+         return Task.FromResult(string.Empty);
+      }
+
+      private async Task<bool> DataExists()
+      {
+         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
+         return retStream.Length > 0;
       }
    }
 }

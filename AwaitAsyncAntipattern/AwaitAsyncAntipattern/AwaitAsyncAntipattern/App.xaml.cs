@@ -31,7 +31,6 @@ namespace AwaitAsyncAntipattern
    #region Imports
 
    using Models.Services;
-   using Shared.SampleCode;
    using ViewModels;
    using Views.Pages;
    using Xamarin.Forms;

@@ -1,4 +1,5 @@
 ﻿#region License
+
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -22,39 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 #endregion
-namespace AwaitAsyncAntipattern.Views.Controls
+
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
-   using System;
-   using System.Threading;
-
-   public interface IThreadSafeAccessor
+   public abstract class BaseDevice
    {
-      void WriteStoredValue(object valueToStore);
-
-      object ReadStoredValue();
-   }
-
-   public class ThreadSafeAccessor : IThreadSafeAccessor
-   {
-      private object _storedValue;
-
-      public ThreadSafeAccessor(object storedValue = null)
+      protected BaseDevice()
       {
-         if (storedValue != null)
-         {
-            WriteStoredValue(storedValue);
-         }
+         RequestFeatureCreation();
       }
 
-      public void WriteStoredValue(object valueToStore)
-      {
-         Interlocked.Exchange(ref _storedValue, valueToStore);
-      }
-
-      public object ReadStoredValue()
-      {
-         return Interlocked.CompareExchange(ref _storedValue, 0, 0);
-      }
+      protected abstract void RequestFeatureCreation();
    }
 }

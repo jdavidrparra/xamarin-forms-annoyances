@@ -26,44 +26,50 @@
 
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
    #region Imports
 
    using System.Threading.Tasks;
-   using Utils;
+   using System.Windows.Input;
+   using SharedCrossApp.Utils;
    using Xamarin.Forms;
 
    #endregion
 
-   public class Miscellaneous
+   public class MyDeviceViewModel
    {
-      public Miscellaneous()
+      private SomeDevice _device;
+
+      public MyDeviceViewModel()
       {
-         var str1 = ReadStream();
-
-         var str2 = string.Empty;
-
-         Device.BeginInvokeOnMainThread(async () => str2 = await ReadStreamAsync().AwaitWithoutChangingContext());
-
-         var dataExists = false;
-         Device.BeginInvokeOnMainThread(async () => dataExists = await DataExists());
+         RetryStartDeviceCommand = new Command(async () => { await StartDevice().AwaitWithoutChangingContext(); });
       }
 
-      private string ReadStream()
+      // A clever programmer has decided to add a button to the UI to retry if the device appears to fail to start up. The button is tied to this command.
+      public ICommand RetryStartDeviceCommand { get; }
+
+      // Called by the PageView at its construction
+      public async Task InitializeViewModel()
       {
-         return string.Empty;
+         // Benignly ask to start the device – foreground await
+         await StartDevice().AwaitWithoutChangingContext();
+
+         // This call relies on the device Feature that fails to construct.
+         await SomeVeryLongRunningTask(_device.Feature).AwaitWithoutChangingContext();
       }
 
-      private Task<string> ReadStreamAsync()
+      private Task<SomeDevice> StartDevice()
       {
-         return Task.FromResult(string.Empty);
+         // A seemingly harmless request to set up a device goes wrong; the foreground thread is now hopelessly stopped, though "unblocked".  The app will never construct!
+         _device = new SomeDevice();
+
+         return Task.FromResult(_device);
       }
 
-      private async Task<bool> DataExists()
+      private async Task SomeVeryLongRunningTask(DeviceFeature feature)
       {
-         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
-         return retStream.Length > 0;
+         await Task.Delay(5000);
       }
    }
 }

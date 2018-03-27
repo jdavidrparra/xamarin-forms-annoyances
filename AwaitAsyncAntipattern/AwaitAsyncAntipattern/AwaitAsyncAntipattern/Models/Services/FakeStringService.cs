@@ -36,7 +36,7 @@ namespace AwaitAsyncAntipattern.Models.Services
    using System.Linq;
    using System.Threading.Tasks;
    using Bogus;
-   using Shared.Utils;
+   using SharedCrossApp.Utils;
    using Xamarin.Forms;
 
    #endregion

@@ -1,4 +1,5 @@
 ﻿#region License
+
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -22,13 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-#endregion
-namespace AwaitAsyncAntipattern.Shared.Utils
-{
-   using Xamarin.Forms;
 
-   public static class Colors
+#endregion
+
+namespace SharedCrossApp.Utils
+{
+   public static class EventUtils
    {
-      public static readonly Color PALE_GRAY = Color.FromRgb(240, 240, 240);
+      public delegate void GenericDelegate<in T>(T val);
+
+      public delegate void NoParamsDelegate();
    }
 }

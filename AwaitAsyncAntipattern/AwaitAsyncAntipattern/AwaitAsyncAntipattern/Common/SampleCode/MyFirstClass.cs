@@ -26,13 +26,13 @@
 
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
    #region Imports
 
    using System.Diagnostics;
    using System.Threading.Tasks;
-   using Utils;
+   using SharedCrossApp.Utils;
 
    #endregion
 

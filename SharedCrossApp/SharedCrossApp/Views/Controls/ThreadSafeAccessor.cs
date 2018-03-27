@@ -23,20 +23,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #endregion
-
-namespace AwaitAsyncAntipattern.ViewModels
+namespace SharedCrossApp.Views.Controls
 {
-   using System.Threading.Tasks;
-   using Xamarin.Forms;
+   using System.Threading;
 
-   public interface IViewModelBase
+   public interface IThreadSafeAccessor
    {
+      void WriteStoredValue(object valueToStore);
+
+      object ReadStoredValue();
    }
 
-   /// <summary>
-   /// The base class for all view models
-   /// </summary>
-   public abstract class ViewModelBase : IViewModelBase
+   public class ThreadSafeAccessor : IThreadSafeAccessor
    {
+      private object _storedValue;
+
+      public ThreadSafeAccessor(object storedValue = null)
+      {
+         if (storedValue != null)
+         {
+            WriteStoredValue(storedValue);
+         }
+      }
+
+      public void WriteStoredValue(object valueToStore)
+      {
+         Interlocked.Exchange(ref _storedValue, valueToStore);
+      }
+
+      public object ReadStoredValue()
+      {
+         return Interlocked.CompareExchange(ref _storedValue, 0, 0);
+      }
    }
 }

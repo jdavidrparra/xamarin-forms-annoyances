@@ -31,10 +31,10 @@ namespace AwaitAsyncAntipattern.Views.Subviews
    #region Imports
 
    using System;
+   using Common.Converters;
    using Controls;
    using Models.Services;
-   using Shared.Converters;
-   using Shared.Utils;
+   using SharedCrossApp.Utils;
    using ViewModels;
    using Xamarin.Forms;
 
@@ -75,25 +75,25 @@ namespace AwaitAsyncAntipattern.Views.Subviews
          Content = null;
 
          // Get the existing relative layout
-         var baseLayout = SharedUtils.GetExpandingRelativeLayout();
+         var baseLayout = FormsUtils.GetExpandingRelativeLayout();
 
          // Just need a grid for this view
-         var mainGrid = SharedUtils.GetExpandingGrid();
+         var mainGrid = FormsUtils.GetExpandingGrid();
          mainGrid.Padding = new Thickness(INSIDE_MARGIN);
          mainGrid.BackgroundColor = Color.Transparent;
 
          // The title is at top with "auto" height.  It is itself a grid with two labels
-         var titleGrid = SharedUtils.GetExpandingGrid();
+         var titleGrid = FormsUtils.GetExpandingGrid();
          titleGrid.Margin = new Thickness(0, 0, 0, INSIDE_MARGIN);
          titleGrid.BackgroundColor = Color.Transparent;
 
          titleGrid.AddAutoRow();
-         var titleTextLabel = SharedUtils.GetSimpleLabel(TitleText, TitleColor, fontNamedSize: NamedSize.Large, fontAttributes: FontAttributes.Bold, labelBindingPropertyName: nameof(TitleText), labelBindingSource: this);
+         var titleTextLabel = FormsUtils.GetSimpleLabel(TitleText, TitleColor, fontNamedSize: NamedSize.Large, fontAttributes: FontAttributes.Bold, labelBindingPropertyName: nameof(TitleText), labelBindingSource: this);
          titleTextLabel.SetUpBinding(Label.TextColorProperty, nameof(TitleColor), source: this);
          titleGrid.Children.Add(titleTextLabel, 0, 0);
 
          titleGrid.AddAutoRow();
-         var descLabel = SharedUtils.GetSimpleLabel(DescriptionText, Color.Black, fontNamedSize: NamedSize.Micro, fontAttributes: FontAttributes.Bold, labelBindingPropertyName: nameof(DescriptionText), labelBindingSource: this);
+         var descLabel = FormsUtils.GetSimpleLabel(DescriptionText, Color.Black, fontNamedSize: NamedSize.Micro, fontAttributes: FontAttributes.Bold, labelBindingPropertyName: nameof(DescriptionText), labelBindingSource: this);
          titleGrid.Children.Add(descLabel, 0, 1);
 
          mainGrid.AddAutoRow();
@@ -112,17 +112,17 @@ namespace AwaitAsyncAntipattern.Views.Subviews
          }
 
          // Add the load timer label and value
-         var loadTimerGrid = SharedUtils.GetExpandingGrid();
+         var loadTimerGrid = FormsUtils.GetExpandingGrid();
          loadTimerGrid.HorizontalOptions = LayoutOptions.Center;
          loadTimerGrid.AddAutoColumn();
          loadTimerGrid.AddAutoColumn();
          loadTimerGrid.AddAutoRow();
 
-         var timerLabel = SharedUtils.GetSimpleLabel("Load Time", fontNamedSize: NamedSize.Small, textAlignment: TextAlignment.End);
+         var timerLabel = FormsUtils.GetSimpleLabel("Load Time", fontNamedSize: NamedSize.Small, textAlignment: TextAlignment.End);
          timerLabel.Margin = new Thickness(0, 0, 5, 0);
          loadTimerGrid.Children.Add(timerLabel, 0, 0);
 
-         var loadTimeLabel = SharedUtils.GetSimpleLabel(fontNamedSize: NamedSize.Small, textAlignment: TextAlignment.Start);
+         var loadTimeLabel = FormsUtils.GetSimpleLabel(fontNamedSize: NamedSize.Small, textAlignment: TextAlignment.Start);
          loadTimeLabel.Margin = new Thickness(5, 0, 0, 0);
          loadTimerGrid.Children.Add(loadTimeLabel, 1, 0);
          loadTimeLabel.SetUpBinding(Label.TextProperty, nameof(IBalloonListCollectionViewModel.TimeToLoad), stringFormat: "{0:mm\\:ss\\:ff}");

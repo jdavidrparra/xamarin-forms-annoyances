@@ -1,4 +1,5 @@
 ﻿#region License
+
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -22,45 +23,46 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 #endregion
-namespace AwaitAsyncAntipattern.Shared.Converters
+
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
-   using System;
-   using System.Collections.Generic;
-   using System.Collections.ObjectModel;
-   using System.Globalization;
-   using ViewModels;
-   using Views.Controls;
-   using Xamarin.Forms;
+   #region Imports
 
-   public class NumberedListSourceConverter : IValueConverter
+   using System.Threading.Tasks;
+   using SharedCrossApp.Utils;
+
+   #endregion
+
+   /// <remarks>
+   ///    Instantiated on the foreground thread.
+   /// </remarks>
+   public class SomeDevice : BaseDevice
    {
-      public static readonly NumberedListSourceConverter Instance = new NumberedListSourceConverter();
+      private bool _isFeatureCreated;
 
-      public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+      public DeviceFeature Feature { get; set; }
+
+      // Occurs automatically as a part of the device start-up; cannot be controlled; occurs on the foreground thread
+      protected override async void RequestFeatureCreation()
       {
-         if (
-               value == null
-               ||
-               !(value is IList<IBalloonListViewModel> valueAsBalloonListViewModel)
-               ||
-               parameter == null
-               ||
-               !int.TryParse(parameter.ToString(), out var parameterAsInt)
-               ||
-               parameterAsInt > valueAsBalloonListViewModel.Count
-            )
+         // This while loop runs *forever*, since the device has unanticipated problems starting up.  
+         // Yet it is awaited on the foreground thread. So it stops the app entirely.  
+         // The user, meanwhile, can tap the keyboard at will, since the app is not technically “blocked”.
+         while (!_isFeatureCreated)
          {
-            return null;
+            _isFeatureCreated = await CreateFeature().AwaitWithoutChangingContext();
          }
-
-         // ELSE SUCCESS
-         return valueAsBalloonListViewModel[parameterAsInt].SubList;
       }
 
-      public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+      private async Task<bool> CreateFeature()
       {
-         throw new NotSupportedException();
+         await Task.Delay(1000);
+
+         // For demonstration purposes, this function always returns false.  
+         // This aggravates our example and causes errors.
+         return false;
       }
    }
 }

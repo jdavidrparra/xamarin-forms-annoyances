@@ -26,14 +26,14 @@
 
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
    #region Imports
 
    using System.Collections.ObjectModel;
    using System.Diagnostics;
    using System.Threading.Tasks;
-   using Utils;
+   using SharedCrossApp.Utils;
    using Xamarin.Forms;
 
    #endregion

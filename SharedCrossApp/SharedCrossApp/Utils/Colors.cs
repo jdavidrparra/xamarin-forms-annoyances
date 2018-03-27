@@ -1,5 +1,4 @@
 ﻿#region License
-
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -23,18 +22,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace SharedCrossApp.Utils
 {
-   public abstract class BaseDevice
-   {
-      protected BaseDevice()
-      {
-         RequestFeatureCreation();
-      }
+   using Xamarin.Forms;
 
-      protected abstract void RequestFeatureCreation();
+   public static class Colors
+   {
+      public static readonly Color PALE_GRAY = Color.FromRgb(240, 240, 240);
    }
 }

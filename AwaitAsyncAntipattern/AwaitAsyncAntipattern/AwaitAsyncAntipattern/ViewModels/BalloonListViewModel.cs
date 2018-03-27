@@ -35,7 +35,8 @@ namespace AwaitAsyncAntipattern.ViewModels
    using System.Diagnostics;
    using System.Threading.Tasks;
    using Models.Services;
-   using Shared.Utils;
+   using SharedCrossApp.Utils;
+   using SharedCrossApp.ViewModels;
    using Views.Controls;
    using Xamarin.Forms;
 

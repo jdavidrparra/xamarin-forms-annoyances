@@ -24,7 +24,7 @@
 // SOFTWARE.
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.Utils
+namespace SharedCrossApp.Utils
 {
    using System;
    using System.Collections.Generic;
@@ -32,12 +32,12 @@ namespace AwaitAsyncAntipattern.Shared.Utils
    using System.Threading.Tasks;
    using Xamarin.Forms;
 
-   internal static class SharedUtils
+   public static class FormsUtils
    {
       /// <summary>
       /// Convenience method to make view / view model property bindings easier to declare.
       /// </summary>
-      internal static void SetUpBinding
+      public static void SetUpBinding
       (
          this View view,
          BindableProperty bindableProperty,
@@ -52,27 +52,27 @@ namespace AwaitAsyncAntipattern.Shared.Utils
          view.SetBinding(bindableProperty, new Binding(viewModelPropertyName, bindingMode, converter, converterParameter, stringFormat, source));
       }
 
-      internal static void AddStarRow(this Grid grid, double factor = 1)
+      public static void AddStarRow(this Grid grid, double factor = 1)
       {
          grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(factor, GridUnitType.Star) });
       }
 
-      internal static void AddAutoRow(this Grid grid)
+      public static void AddAutoRow(this Grid grid)
       {
          grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
       }
 
-      internal static void AddFixedRow(this Grid grid, double height)
+      public static void AddFixedRow(this Grid grid, double height)
       {
          grid.RowDefinitions.Add(new RowDefinition { Height = height });
       }
 
-      internal static void AddAutoColumn(this Grid grid)
+      public static void AddAutoColumn(this Grid grid)
       {
          grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
       }
 
-      internal static Label GetSimpleLabel
+      public static Label GetSimpleLabel
       (
          string labelText = default(string),
          Color textColor = default(Color),
@@ -134,7 +134,7 @@ namespace AwaitAsyncAntipattern.Shared.Utils
          return retLabel;
       }
 
-      internal static bool IsAnEqualReferenceTo<T>(this T mainObj, T compareObj)
+      public static bool IsAnEqualReferenceTo<T>(this T mainObj, T compareObj)
          where T : class
       {
          return
@@ -147,13 +147,13 @@ namespace AwaitAsyncAntipattern.Shared.Utils
             );
       }
 
-      internal static bool IsNotAnEqualReferenceTo<T>(this object mainObj, object compareObj)
+      public static bool IsNotAnEqualReferenceTo<T>(this object mainObj, object compareObj)
          where T : class
       {
          return !mainObj.IsAnEqualReferenceTo(compareObj);
       }
 
-      internal static bool IsAnEqualObjectTo(this object mainObj, object compareObj)
+      public static bool IsAnEqualObjectTo(this object mainObj, object compareObj)
       {
          return
             mainObj == null && compareObj == null
@@ -163,7 +163,7 @@ namespace AwaitAsyncAntipattern.Shared.Utils
             compareObj != null && compareObj.Equals(mainObj);
       }
 
-      internal static bool IsNotAnEqualObjectTo(this object mainObj, object compareObj)
+      public static bool IsNotAnEqualObjectTo(this object mainObj, object compareObj)
       {
          return !mainObj.IsAnEqualObjectTo(compareObj);
       }
@@ -174,96 +174,96 @@ namespace AwaitAsyncAntipattern.Shared.Utils
 
       public const string FALSE_STR = "false";
 
-      internal static bool? EmptyNullableBool => new bool?();
+      public static bool? EmptyNullableBool => new bool?();
 
-      internal static bool IsSameAs(this double mainD, double otherD)
+      public static bool IsSameAs(this double mainD, double otherD)
       {
          return Math.Abs(mainD - otherD) < NUMERIC_ERROR;
       }
 
-      internal static bool IsDifferentThan(this double mainD, double otherD)
+      public static bool IsDifferentThan(this double mainD, double otherD)
       {
          return !mainD.IsSameAs(otherD);
       }
 
-      internal static bool IsEmpty(this double mainD)
+      public static bool IsEmpty(this double mainD)
       {
          return mainD.IsSameAs(0);
       }
 
-      internal static bool IsNotEmpty(this double mainD)
+      public static bool IsNotEmpty(this double mainD)
       {
          return !mainD.IsEmpty();
       }
 
-      internal static bool IsSameAs(this float mainF, float otherF)
+      public static bool IsSameAs(this float mainF, float otherF)
       {
          return Math.Abs(mainF - otherF) < NUMERIC_ERROR;
       }
 
-      internal static bool IsDifferentThan(this float mainF, float otherF)
+      public static bool IsDifferentThan(this float mainF, float otherF)
       {
          return !mainF.IsSameAs(otherF);
       }
 
-      internal static bool IsEmpty(this string str)
+      public static bool IsEmpty(this string str)
       {
          return String.IsNullOrWhiteSpace(str);
       }
 
-      internal static bool IsNotEmpty(this string str)
+      public static bool IsNotEmpty(this string str)
       {
          return !str.IsEmpty();
       }
 
-      internal static bool IsEmpty<T>(this IEnumerable<T> list)
+      public static bool IsEmpty<T>(this IEnumerable<T> list)
       {
          return list == null || !list.Any();
       }
 
-      internal static bool IsNotEmpty<T>(this IEnumerable<T> list)
+      public static bool IsNotEmpty<T>(this IEnumerable<T> list)
       {
          return !list.IsEmpty();
       }
 
-      internal static bool IsSameAs(this string mainStr, string otherStr)
+      public static bool IsSameAs(this string mainStr, string otherStr)
       {
          return String.Compare(mainStr, otherStr, StringComparison.CurrentCultureIgnoreCase) == 0;
       }
 
-      internal static bool IsDifferentThan(this string mainStr, string otherStr)
+      public static bool IsDifferentThan(this string mainStr, string otherStr)
       {
          return !mainStr.IsSameAs(otherStr);
       }
 
-      internal static int RoundToInt(this double floatVal)
+      public static int RoundToInt(this double floatVal)
       {
          return (int)Math.Round(floatVal, 0);
       }
 
-      internal static bool IsLessThanOrEqualTo(this double thisD, double otherD)
+      public static bool IsLessThanOrEqualTo(this double thisD, double otherD)
       {
          return thisD.IsSameAs(otherD) || thisD < otherD;
       }
 
-      internal static bool IsGreaterThanOrEqualTo(this double thisD, double otherD)
+      public static bool IsGreaterThanOrEqualTo(this double thisD, double otherD)
       {
          return thisD.IsSameAs(otherD) || thisD > otherD;
       }
 
-      internal static bool IsTrue(this bool? b)
+      public static bool IsTrue(this bool? b)
       {
          return b.HasValue && b.Value;
       }
 
-      internal static bool IsNotTheSame(this bool? first, bool? second)
+      public static bool IsNotTheSame(this bool? first, bool? second)
       {
          return first == null != (second == null)
                 ||
                 first.IsNotAnEqualObjectTo(second);
       }
 
-      internal static LayoutOptions HorizontalOptionsFromTextAlignment(TextAlignment textAlignment)
+      public static LayoutOptions HorizontalOptionsFromTextAlignment(TextAlignment textAlignment)
       {
          switch (textAlignment)
          {
@@ -278,7 +278,7 @@ namespace AwaitAsyncAntipattern.Shared.Utils
          }
       }
 
-      internal static void CreateRelativeOverlay(this RelativeLayout layout, View viewToAdd)
+      public static void CreateRelativeOverlay(this RelativeLayout layout, View viewToAdd)
       {
          layout.Children.Add(
             viewToAdd, Constraint.Constant(0), Constraint.Constant(0),
@@ -286,7 +286,7 @@ namespace AwaitAsyncAntipattern.Shared.Utils
             Constraint.RelativeToParent(parent => parent.Height));
       }
 
-      internal static RelativeLayout GetExpandingRelativeLayout()
+      public static RelativeLayout GetExpandingRelativeLayout()
       {
          return new RelativeLayout
          {
@@ -296,7 +296,7 @@ namespace AwaitAsyncAntipattern.Shared.Utils
          };
       }
 
-      internal static Grid GetExpandingGrid()
+      public static Grid GetExpandingGrid()
       {
          return new Grid
          {
@@ -306,12 +306,12 @@ namespace AwaitAsyncAntipattern.Shared.Utils
          };
       }
 
-      internal static async Task AwaitWithoutChangingContext(this Task task)
+      public static async Task AwaitWithoutChangingContext(this Task task)
       {
          await task.ConfigureAwait(false);
       }
 
-      internal static async Task<T> AwaitWithoutChangingContext<T>(this Task<T> task)
+      public static async Task<T> AwaitWithoutChangingContext<T>(this Task<T> task)
       {
          return await task.ConfigureAwait(false);
       }

@@ -26,50 +26,51 @@
 
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
    #region Imports
 
+   using System;
    using System.Threading.Tasks;
-   using System.Windows.Input;
-   using Utils;
-   using Xamarin.Forms;
+   using SharedCrossApp.Utils;
 
    #endregion
 
-   public class MyDeviceViewModel
+   public class MySecondClass
    {
-      private SomeDevice _device;
+      private bool _localDataExistsBool;
 
-      public MyDeviceViewModel()
+      public MySecondClass()
       {
-         RetryStartDeviceCommand = new Command(async () => { await StartDevice().AwaitWithoutChangingContext(); });
+         Task.Run(async () =>
+         {
+            await VerifyDataExists().AwaitWithoutChangingContext();
+            ConstructClass();
+            IAmNowReliable?.Invoke(this, this);
+         });
       }
 
-      // A clever programmer has decided to add a button to the UI to retry if the device appears to fail to start up. The button is tied to this command.
-      public ICommand RetryStartDeviceCommand { get; }
+      public event EventHandler<object> IAmNowReliable;
 
-      // Called by the PageView at its construction
-      public async Task InitializeViewModel()
+      public async Task<bool> DataExists()
       {
-         // Benignly ask to start the device – foreground await
-         await StartDevice().AwaitWithoutChangingContext();
-
-         // This call relies on the device Feature that fails to construct.
-         await SomeVeryLongRunningTask(_device.Feature).AwaitWithoutChangingContext();
+         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
+         return retStream.Length > 0;
       }
 
-      private Task<SomeDevice> StartDevice()
+      public async Task VerifyDataExists()
       {
-         // A seemingly harmless request to set up a device goes wrong; the foreground thread is now hopelessly stopped, though "unblocked".  The app will never construct!
-         _device = new SomeDevice();
-
-         return Task.FromResult(_device);
+         _localDataExistsBool = await DataExists().AwaitWithoutChangingContext();
       }
 
-      private async Task SomeVeryLongRunningTask(DeviceFeature feature)
+      private void ConstructClass()
       {
-         await Task.Delay(5000);
+         // Do some complex construction that relies on _localDataExistsBool
+      }
+
+      private Task<string> ReadStreamAsync()
+      {
+         return Task.FromResult("testing123");
       }
    }
 }

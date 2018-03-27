@@ -1,5 +1,4 @@
 ﻿#region License
-
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -23,54 +22,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.SampleCode
+namespace SharedCrossApp.ViewModels
 {
-   #region Imports
-
-   using System;
-   using System.Threading.Tasks;
-   using Utils;
-
-   #endregion
-
-   public class MySecondClass
+   public interface IViewModelBase
    {
-      private bool _localDataExistsBool;
+   }
 
-      public MySecondClass()
-      {
-         Task.Run(async () =>
-         {
-            await VerifyDataExists().AwaitWithoutChangingContext();
-            ConstructClass();
-            IAmNowReliable?.Invoke(this, this);
-         });
-      }
-
-      public event EventHandler<object> IAmNowReliable;
-
-      public async Task<bool> DataExists()
-      {
-         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
-         return retStream.Length > 0;
-      }
-
-      public async Task VerifyDataExists()
-      {
-         _localDataExistsBool = await DataExists().AwaitWithoutChangingContext();
-      }
-
-      private void ConstructClass()
-      {
-         // Do some complex construction that relies on _localDataExistsBool
-      }
-
-      private Task<string> ReadStreamAsync()
-      {
-         return Task.FromResult("testing123");
-      }
+   /// <summary>
+   /// The base class for all view models
+   /// </summary>
+   public abstract class ViewModelBase : IViewModelBase
+   {
    }
 }

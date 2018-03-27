@@ -33,6 +33,7 @@ namespace AwaitAsyncAntipattern.ViewModels
    using System;
    using System.Threading.Tasks;
    using PropertyChanged;
+   using SharedCrossApp.ViewModels;
    using Views.Pages;
    using Xamarin.Forms;
 

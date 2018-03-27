@@ -26,12 +26,51 @@
 
 #endregion
 
-namespace AwaitAsyncAntipattern.Shared.Utils
+namespace AwaitAsyncAntipattern.Common.SampleCode
 {
-   public static class EventUtils
-   {
-      public delegate void GenericDelegate<in T>(T val);
+   #region Imports
 
-      public delegate void NoParamsDelegate();
+   using SharedCrossApp.Utils;
+   using Xamarin.Forms;
+
+   #endregion
+
+   public class MyPage : ContentPage
+   {
+      // private MyViewModel _viewModel;
+      private MyDeviceViewModel _viewModel;
+
+      public MyPage()
+      {
+         var button = new Button
+         {
+            Text = "Start Up Device",
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+         };
+
+         Content = button;
+
+         // BindingContextChanged += (s, e) => { _viewModel = BindingContext as MyViewModel; };
+         BindingContextChanged += (s, e) =>
+         {
+            _viewModel = BindingContext as MyDeviceViewModel;
+
+            if (_viewModel != null)
+            {
+               button.Command = _viewModel.RetryStartDeviceCommand;
+            }
+         };
+      }
+
+      // Async signature is legal here
+      protected override async void OnAppearing()
+      {
+         // This call then cascades into dozens of other awaits, all on the foreground thread.
+         if (_viewModel != null)
+         {
+            await _viewModel.InitializeViewModel().AwaitWithoutChangingContext();
+         }
+      }
    }
 }

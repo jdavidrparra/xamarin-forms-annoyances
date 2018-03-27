@@ -39,7 +39,8 @@ namespace AwaitAsyncAntipattern.ViewModels
    using System.Threading.Tasks;
    using Models.Services;
    using PropertyChanged;
-   using Shared.Utils;
+   using SharedCrossApp.Utils;
+   using SharedCrossApp.Views.Controls;
    using Views.Controls;
    using Views.Subviews;
    using Xamarin.Forms;
@@ -67,7 +68,6 @@ namespace AwaitAsyncAntipattern.ViewModels
    {
       private bool _isAnimating;
       private readonly Stopwatch _stopwatch = new Stopwatch();
-      // private volatile int _isPopulatedSuccessCount;
       private readonly IThreadSafeAccessor _threadSafePopulatedSuccessCount = new ThreadSafeAccessor(0);
 
       public BalloonListCollectionViewModel(bool isForeground)
