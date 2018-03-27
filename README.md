@@ -1,6 +1,6 @@
 # Xamarin Forms Annoyances
 
-Lesssons Learned While Coding With Xamarin.Forms.
+Lessons Learned While Coding With Xamarin.Forms.
 
 ## The Await-Async Anti-Pattern
 
