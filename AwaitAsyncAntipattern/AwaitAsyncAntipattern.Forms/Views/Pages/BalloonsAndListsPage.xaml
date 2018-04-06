@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage 
+   xmlns="http://xamarin.com/schemas/2014/forms"
+   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+   xmlns:subviews="clr-namespace:AwaitAsyncAntipattern.Forms.Views.Subviews;assembly=AwaitAsyncAntipattern.Forms"
+   xmlns:utils="clr-namespace:SharedForms.Common.Utils;assembly=SharedForms"
+   x:Class="AwaitAsyncAntipattern.Forms.Views.Pages.BalloonsAndListsPage"
+   BackgroundColor="{x:Static utils:Colors.PALE_GRAY}"
+>
+   <ContentPage.Content>
+      <Grid
+         BackgroundColor="Transparent"
+         HorizontalOptions="FillAndExpand"
+         VerticalOptions="FillAndExpand"
+         Margin="10">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="0.5*" />
+         </Grid.ColumnDefinitions>
+
+         <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+         </Grid.RowDefinitions>
+
+         <subviews:BalloonListCollectionView
+            Grid.Column="0"
+            Grid.Row="0" 
+            TitleText="BAD"
+            DescriptionText="Nested await/async on the foreground thread"
+            TitleColor="Red"
+            BindingContext="{Binding ForegroundAwaitViewModel}"
+         />
+
+         <BoxView
+            Grid.Column="1"
+            Grid.Row="0"
+            WidthRequest="2"
+            HorizontalOptions="Center"
+            VerticalOptions="FillAndExpand"
+            Color="DarkBlue" />
+
+         <subviews:BalloonListCollectionView
+            Grid.Column="2"
+            Grid.Row="0" 
+            TitleText="GOOD"
+            DescriptionText="Task.Run instead of nested await/async"
+            TitleColor="Green"
+            BindingContext="{Binding TaskRunViewModel}"
+         />
+
+         <Button
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.ColumnSpan="3"
+            Text="Start Comparison"
+            WidthRequest="150"
+            HeightRequest="40"
+            Font="Medium"
+            FontAttributes="Bold"
+            TextColor="White"
+            BackgroundColor="DarkBlue"
+            Command="{Binding StartCommand}"
+         />
+      </Grid>
+   </ContentPage.Content>
+</ContentPage>

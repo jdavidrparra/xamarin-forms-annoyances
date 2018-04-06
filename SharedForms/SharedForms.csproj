@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Utills\**" />
+    <EmbeddedResource Remove="Utills\**" />
+    <None Remove="Utills\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.2" />
+    <PackageReference Include="Fody" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.0.4" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.4.0" />
+    <PackageReference Include="Xamarin.Forms" Version="2.4.0.91020" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharedGlobals\SharedGlobals.csproj" />
+  </ItemGroup>
+
+</Project>
