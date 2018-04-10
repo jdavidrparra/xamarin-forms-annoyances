@@ -24,6 +24,8 @@ See the complete blog at https://marcusts.com/2018/04/06/the-mvvm-framework-anti
 
 So Much IOC; So Little Inversion or Control
 
+![123](https://marcusts.com/wp-content/uploads/2018/04/SecondViewModelIsStillAlive.png)
+
 See the complete blog at https://marcusts.com/2018/04/09/the-ioc-container-anti-pattern/.
 
 
