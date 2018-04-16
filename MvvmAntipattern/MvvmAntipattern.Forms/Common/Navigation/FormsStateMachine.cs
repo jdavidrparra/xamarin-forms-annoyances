@@ -35,7 +35,6 @@ namespace MvvmAntipattern.Forms.Common.Navigation
    using SharedForms.Common.Generators;
    using SharedForms.Common.Interfaces;
    using SharedForms.Common.Navigation;
-   using SharedForms.Common.Notifications;
    using SharedForms.ViewModels;
    using SharedForms.Views.Pages;
    using ViewModels;
@@ -46,8 +45,12 @@ namespace MvvmAntipattern.Forms.Common.Navigation
    #endregion
 
    /// <summary>
-   ///    A controller to manage which views and view models are shown for a given state
+   /// A controller to manage which views and view models are shown for a given state
    /// </summary>
+   /// <remarks>
+   /// I avoid using an interface here because we inherently share IStateMachineBase with the StateMachineBase.
+   /// The DI Container Resolve needs a consistent interface as a reference, and cannot benefit from additional, competitive interfaces.
+   /// </remarks>
    public class FormsStateMachine : StateMachineBase
    {
       public const string NO_APP_STATE = "None";
@@ -96,28 +99,28 @@ namespace MvvmAntipattern.Forms.Common.Navigation
          switch (newState)
          {
             case ABOUT_APP_STATE:
-               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new AboutViewModel() {PageTitle = titleStr}, preventStackPush);
+               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new AboutViewModel(this) {PageTitle = titleStr}, preventStackPush);
                break;
 
             case PREFERENCES_APP_STATE:
-               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new PreferencesViewModel() { PageTitle = titleStr }, preventStackPush);
+               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new PreferencesViewModel(this) { PageTitle = titleStr }, preventStackPush);
                break;
 
             case CAT_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new CatViewModel(new CatData()) { PageTitle = titleStr }, preventStackPush);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new CatViewModel(this, new CatData()) { PageTitle = titleStr }, preventStackPush);
                break;
 
             case BIRD_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new BirdViewModel(new BirdData()) { PageTitle = titleStr }, preventStackPush);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new BirdViewModel(this, new BirdData()) { PageTitle = titleStr }, preventStackPush);
                break;
 
             case DOG_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new DogViewModel(new DogData()) { PageTitle = titleStr }, preventStackPush);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new DogViewModel(this, new DogData()) { PageTitle = titleStr }, preventStackPush);
                break;
 
             default:
                //NO_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new NoAnimalViewModel() { PageTitle = titleStr }, true);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new NoAnimalViewModel(this, null) { PageTitle = titleStr }, true);
                break;
          }
       }

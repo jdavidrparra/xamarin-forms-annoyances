@@ -51,7 +51,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
          {
             Task.Run(async () =>
             {
-               await VerifyDataExists().AwaitWithoutChangingContext();
+               await VerifyDataExists().WithoutChangingContext();
 
                // Occurs in the proper order, after VerifyDataExists has completed
                ConstructClass();
@@ -68,13 +68,13 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
 
       public async Task<bool> DataExists()
       {
-         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
+         var retStream = await ReadStreamAsync().WithoutChangingContext();
          return retStream.Length > 0;
       }
 
       public async Task VerifyDataExists()
       {
-         _localDataExistsBool = await DataExists().AwaitWithoutChangingContext();
+         _localDataExistsBool = await DataExists().WithoutChangingContext();
       }
 
       private string ReadStream()

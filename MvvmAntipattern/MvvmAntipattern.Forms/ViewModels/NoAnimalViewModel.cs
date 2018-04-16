@@ -30,21 +30,14 @@ namespace MvvmAntipattern.Forms.ViewModels
    using Common.Navigation;
    using Models;
    using PropertyChanged;
+   using SharedForms.Common.Navigation;
    using Xamarin.Forms;
 
    [AddINotifyPropertyChangedInterface]
    [DoNotNotify]
    public class NoAnimalViewModel : AnimalViewModelBase, IBird
    {
-      public NoAnimalViewModel(IAnimalDataBase animalData) : base(animalData)
-      {
-      }
-
-      /// <summary>
-      /// Necessary for menu reflection. Otherwise harmless :)
-      /// </summary>
-      public NoAnimalViewModel()
-         : this(null)
+      public NoAnimalViewModel(IStateMachineBase stateMachine, IAnimalDataBase animalData) : base(stateMachine, animalData)
       {
       }
 

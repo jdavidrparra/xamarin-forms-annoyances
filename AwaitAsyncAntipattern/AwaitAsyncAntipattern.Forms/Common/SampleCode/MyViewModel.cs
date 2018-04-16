@@ -65,7 +65,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
       // Never called on a foreground thread
       public async Task SomeTask()
       {
-         var list = await SomeWebServiceOperation().AwaitWithoutChangingContext();
+         var list = await SomeWebServiceOperation().WithoutChangingContext();
 
          // Use this trick to come back from a threaded call
          Device.BeginInvokeOnMainThread(() => { UIBoundList = new ObservableCollection<string>(list); });

@@ -328,12 +328,12 @@ namespace SharedForms.Common.Utils
          };
       }
 
-      public static async Task AwaitWithoutChangingContext(this Task task)
+      public static async Task WithoutChangingContext(this Task task)
       {
          await task.ConfigureAwait(false);
       }
 
-      public static async Task<T> AwaitWithoutChangingContext<T>(this Task<T> task)
+      public static async Task<T> WithoutChangingContext<T>(this Task<T> task)
       {
          return await task.ConfigureAwait(false);
       }

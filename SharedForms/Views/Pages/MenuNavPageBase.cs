@@ -33,7 +33,6 @@ namespace SharedForms.Views.Pages
    using System.Threading.Tasks;
    using Autofac;
    using Common.Interfaces;
-   using Common.Notifications;
    using Common.Utils;
    using PropertyChanged;
    using SharedGlobals.Container;
@@ -63,12 +62,15 @@ namespace SharedForms.Views.Pages
 
       protected MenuNavPageBase()
       {
+         // NOTE: This scope doesn't work acording to internal testing, but it appears harmless otherwise.
+         //       The PageMenu must be yanked out of the container each time to manage its state.
+         //       Declaring the PageMenu as global static created instability, hence this hack.
          using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
          {
             PageMenu = scope.Resolve<IMainMenu>();
          }
 
-         Messenger.Subscribe<NavBarMenuTappedMessage>(this, OnMainMenuItemSelected);
+         FormsMessengerUtils.Subscribe<NavBarMenuTappedMessage>(this, OnMainMenuItemSelected);
 
          BackgroundColor = Color.Transparent;
 
@@ -100,7 +102,7 @@ namespace SharedForms.Views.Pages
                {
                   _isPageMenuShowing = value;
 
-                  await AnimatePageMenu();
+                  await AnimatePageMenu().WithoutChangingContext();
 
                   // HACK to fix dead UI in the main menu, which sits on top of this canvas
                   _canvas.InputTransparent = !_isPageMenuShowing;
@@ -130,14 +132,14 @@ namespace SharedForms.Views.Pages
                      PageMenu.MenuHeight
                   );
 
-            await Task.WhenAll(new [] { PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicIn), PageMenuView.FadeTo(1.0, MENU_FADE_MILLISECONDS)});
+            await Task.WhenAll(new [] { PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicIn), PageMenuView.FadeTo(1.0, MENU_FADE_MILLISECONDS)}).WithoutChangingContext();
          }
          else
          {
             // Retract the menu
             var rect = CreateOfflineRectangle();
 
-            await Task.WhenAll(new[] { PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicOut), PageMenuView.FadeTo(0.0, MENU_FADE_MILLISECONDS) });
+            await Task.WhenAll(new[] { PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicOut), PageMenuView.FadeTo(0.0, MENU_FADE_MILLISECONDS) }).WithoutChangingContext();
          }
       }
 
@@ -176,7 +178,7 @@ namespace SharedForms.Views.Pages
       {
          base.OnDisappearing();
 
-         Messenger.Unsubscribe<NavBarMenuTappedMessage>(this);
+         FormsMessengerUtils.Unsubscribe<NavBarMenuTappedMessage>(this);
 
          RemoveMenuFromLayout();
       }

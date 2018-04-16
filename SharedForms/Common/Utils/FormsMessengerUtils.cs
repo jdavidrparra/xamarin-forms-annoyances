@@ -26,12 +26,11 @@
 
 #endregion
 
-namespace SharedForms.Common.Notifications
+namespace SharedForms.Common.Utils
 {
    #region Imports
 
    using System;
-   using Generators;
    using ViewModels;
    using Xamarin.Forms;
 
@@ -41,21 +40,12 @@ namespace SharedForms.Common.Notifications
    {
    }
 
-   public interface IFormsMessenger
+   /// <summary>
+   /// A global static utilty library to assist with Xamarin.Forms.MessagingCenter calls.
+   /// </summary>
+   public static class FormsMessengerUtils
    {
-      void Send<TMessage>(TMessage message, object sender = null)
-         where TMessage : IMessage;
-
-      void Subscribe<TMessage>(object subscriber, Action<object, TMessage> callback)
-         where TMessage : IMessage;
-
-      void Unsubscribe<TMessage>(object subscriber)
-         where TMessage : IMessage;
-   }
-
-   public class FormsMessenger : IFormsMessenger
-   {
-      public void Send<TMessage>(TMessage message, object sender = null) where TMessage : IMessage
+      public static void Send<TMessage>(TMessage message, object sender = null) where TMessage : IMessage
       {
          if (sender == null)
          {
@@ -65,12 +55,12 @@ namespace SharedForms.Common.Notifications
          MessagingCenter.Send(sender, typeof(TMessage).FullName, message);
       }
 
-      public void Subscribe<TMessage>(object subscriber, Action<object, TMessage> callback) where TMessage : IMessage
+      public static void Subscribe<TMessage>(object subscriber, Action<object, TMessage> callback) where TMessage : IMessage
       {
          MessagingCenter.Subscribe(subscriber, typeof(TMessage).FullName, callback);
       }
 
-      public void Unsubscribe<TMessage>(object subscriber) where TMessage : IMessage
+      public static void Unsubscribe<TMessage>(object subscriber) where TMessage : IMessage
       {
          MessagingCenter.Unsubscribe<object, TMessage>(subscriber, typeof(TMessage).FullName);
       }
@@ -99,11 +89,28 @@ namespace SharedForms.Common.Notifications
    {
    }
 
-   public class MenuReflectionRequestMessage : NoPayloadMessage
+   public class MenuLoadedMessage : NoPayloadMessage
    {
    }
 
-   public class MenuLoadedMessage : NoPayloadMessage
+   public class AppStateChangedMessage : GenericMessageWithPayload<AppStateChanges>
    {
+      public AppStateChangedMessage(string oldAppState, bool preventNavStackPush)
+      {
+         Payload = new AppStateChanges(oldAppState, preventNavStackPush);
+      }
+   }
+
+   public class AppStateChanges
+   {
+      public AppStateChanges(string oldAppState, bool preventNavStackPush)
+      {
+         OldAppState = oldAppState;
+         PreventNavStackPush = preventNavStackPush;
+      }
+
+      public string OldAppState { get; set; }
+
+      public bool PreventNavStackPush { get; set; }
    }
 }

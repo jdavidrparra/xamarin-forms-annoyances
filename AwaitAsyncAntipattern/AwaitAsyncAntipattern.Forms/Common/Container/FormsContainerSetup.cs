@@ -3,7 +3,6 @@
    #region Imports
 
    using Autofac;
-   using SharedForms.Common.Notifications;
    using SharedGlobals.Container;
 
    #endregion

@@ -52,7 +52,8 @@ namespace MvvmAntipattern.Forms.Models
 
       private string MakeImageSourceString(string prefix, bool iAmBig)
       {
-         return prefix + "_" + (iAmBig ? "big" : "small");
+         // HACK suffix - jpg -- 
+         return prefix + "_" + (iAmBig ? "big" : "small") + ".jpg";
       }
    }
 }

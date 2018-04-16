@@ -30,21 +30,14 @@ namespace MvvmAntipattern.Forms.ViewModels
    using Common.Navigation;
    using Models;
    using PropertyChanged;
+   using SharedForms.Common.Navigation;
    using Xamarin.Forms;
 
    [AddINotifyPropertyChangedInterface]
    [DoNotNotify]
    public class CatViewModel : AnimalViewModelBase, ICat
    {
-      public CatViewModel(IAnimalDataBase animalData) : base(animalData)
-      {
-      }
-
-      /// <summary>
-      /// Necessary for menu reflection. Otherwise harmless :)
-      /// </summary>
-      public CatViewModel() 
-      : this(null)
+      public CatViewModel(IStateMachineBase stateMachine, IAnimalDataBase animalData) : base(stateMachine, animalData)
       {
       }
 

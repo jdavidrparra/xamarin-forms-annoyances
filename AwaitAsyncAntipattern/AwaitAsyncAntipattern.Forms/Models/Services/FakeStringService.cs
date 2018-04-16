@@ -95,7 +95,7 @@ namespace AwaitAsyncAntipattern.Forms.Models.Services
 
       public static async Task LoadOneList(ObservableCollection<string> list, int listNum, bool notThreaded, Action<ObservableCollection<string>> callbackAction)
       {
-         var rawList = await GetListAsync(listNum).AwaitWithoutChangingContext();
+         var rawList = await GetListAsync(listNum).WithoutChangingContext();
 
          // Foreground await case
          if (notThreaded)

@@ -1,5 +1,4 @@
 ﻿#region License
-
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -23,54 +22,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
 #endregion
 
-namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
+namespace SharedForms.Common.Utils
 {
-   #region Imports
+   using System;
+   using Autofac;
+   using Navigation;
+   using SharedGlobals.Container;
+   using Xamarin.Forms.Xaml;
 
-   using SharedForms.Common.Utils;
-   using Xamarin.Forms;
-
-   #endregion
-
-   public class MyPage : ContentPage
+   /// <summary>
+   /// https://docs.microsoft.com/en-us/xamarin/xamarin-forms/xaml/markup-extensions/creating
+   /// </summary>
+   public class StateMachineAccessorExtension : IMarkupExtension<IStateMachineBase>
    {
-      // private MyViewModel _viewModel;
-      private MyDeviceViewModel _viewModel;
-
-      public MyPage()
+      public IStateMachineBase ProvideValue(IServiceProvider serviceProvider)
       {
-         var button = new Button
-         {
-            Text = "Start Up Device",
-            HorizontalOptions = LayoutOptions.Center,
-            VerticalOptions = LayoutOptions.Center
-         };
-
-         Content = button;
-
-         // BindingContextChanged += (s, e) => { _viewModel = BindingContext as MyViewModel; };
-         BindingContextChanged += (s, e) =>
-         {
-            _viewModel = BindingContext as MyDeviceViewModel;
-
-            if (_viewModel != null)
-            {
-               button.Command = _viewModel.RetryStartDeviceCommand;
-            }
-         };
+         return AppContainer.GlobalVariableContainer.Resolve<IStateMachineBase>();
       }
 
-      // Async signature is legal here
-      protected override async void OnAppearing()
+      object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider)
       {
-         // This call then cascades into dozens of other awaits, all on the foreground thread.
-         if (_viewModel != null)
-         {
-            await _viewModel.InitializeViewModel().WithoutChangingContext();
-         }
+         return ProvideValue(serviceProvider);
       }
    }
 }

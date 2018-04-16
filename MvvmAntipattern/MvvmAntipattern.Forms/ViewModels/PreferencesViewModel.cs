@@ -28,11 +28,15 @@ namespace MvvmAntipattern.Forms.ViewModels
 {
    using Common.Navigation;
    using PropertyChanged;
+   using SharedForms.Common.Navigation;
    using SharedForms.ViewModels;
 
    [AddINotifyPropertyChangedInterface]
    [DoNotNotify]
    public class PreferencesViewModel : PageViewModelBase
    {
+      public PreferencesViewModel(IStateMachineBase stateMachine) : base(stateMachine)
+      {
+      }
    }
 }

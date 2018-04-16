@@ -1,4 +1,5 @@
 ﻿#region License
+
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -22,44 +23,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 #endregion
 
 namespace SharedForms.Views.Pages
 {
+   #region Imports
+
    using System;
    using System.Diagnostics;
-   using System.Threading.Tasks;
-   using Autofac;
-   using Common.Notifications;
    using Common.Utils;
-   using SharedGlobals.Container;
    using Xamarin.Forms;
 
+   #endregion
+
    /// <remarks>
-   /// WARNING: NO I CONTENT PAGE, so cannot reference the view from this interface without a hard cast!
+   ///    WARNING: NO ICONTENTPAGE, so cannot reference the view from this interface without a hard cast!
    /// </remarks>
    public interface ITypeSafePageBase
    {
    }
 
    /// <summary>
-   /// A base class for content pages that protects the type safety of the binding context.
+   ///    A base class for content pages that protects the type safety of the binding context.
    /// </summary>
    /// <typeparam name="InterfaceT">The required interface for this view.</typeparam>
    public abstract class TypeSafePageBase<InterfaceT> : ContentPage, ITypeSafePageBase
       where InterfaceT : class
    {
-      protected static readonly IFormsMessenger Messenger;
-
       private readonly RelativeLayout _contentRelativeLayout = FormsUtils.GetExpandingRelativeLayout();
-
-      static TypeSafePageBase()
-      {
-         using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
-         {
-            Messenger = scope.Resolve<IFormsMessenger>();
-         }
-      }
 
       protected TypeSafePageBase()
       {
@@ -68,12 +60,12 @@ namespace SharedForms.Views.Pages
       }
 
       /// <summary>
-      /// T is normally an interface -- not a class -- but there is no such constraint available.
+      ///    T is normally an interface -- not a class -- but there is no such constraint available.
       /// </summary>
       public new InterfaceT BindingContext
       {
          get => base.BindingContext as InterfaceT;
-         set => base.BindingContext = value; 
+         set => base.BindingContext = value;
       }
 
       /// <summary>

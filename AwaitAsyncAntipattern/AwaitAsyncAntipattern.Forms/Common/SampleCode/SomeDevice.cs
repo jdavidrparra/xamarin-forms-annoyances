@@ -52,7 +52,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
          // The user, meanwhile, can tap the keyboard at will, since the app is not technically “blocked”.
          while (!_isFeatureCreated)
          {
-            _isFeatureCreated = await CreateFeature().AwaitWithoutChangingContext();
+            _isFeatureCreated = await CreateFeature().WithoutChangingContext();
          }
       }
 

@@ -44,7 +44,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
       {
          Task.Run(async () =>
          {
-            await VerifyDataExists().AwaitWithoutChangingContext();
+            await VerifyDataExists().WithoutChangingContext();
             ConstructClass();
             IAmNowReliable?.Invoke(this, this);
          });
@@ -54,13 +54,13 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
 
       public async Task<bool> DataExists()
       {
-         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
+         var retStream = await ReadStreamAsync().WithoutChangingContext();
          return retStream.Length > 0;
       }
 
       public async Task VerifyDataExists()
       {
-         _localDataExistsBool = await DataExists().AwaitWithoutChangingContext();
+         _localDataExistsBool = await DataExists().WithoutChangingContext();
       }
 
       private void ConstructClass()

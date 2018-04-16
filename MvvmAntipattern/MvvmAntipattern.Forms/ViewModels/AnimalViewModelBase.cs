@@ -32,6 +32,7 @@ namespace MvvmAntipattern.Forms.ViewModels
    using Models;
    using PropertyChanged;
    using SharedForms.Common.Interfaces;
+   using SharedForms.Common.Navigation;
    using SharedForms.ViewModels;
    using Xamarin.Forms;
 
@@ -49,18 +50,13 @@ namespace MvvmAntipattern.Forms.ViewModels
       private bool _IAmBig;
       private readonly IAnimalDataBase _animalData;
 
-      protected AnimalViewModelBase(IAnimalDataBase animalData)
+      protected AnimalViewModelBase(IStateMachineBase stateMachine, IAnimalDataBase animalData) : base(stateMachine)
       {
          _animalData = animalData;
 
          // These commands are not currently used
          MakeNoiseCommand = new Command(() => { });
          MoveCommand = new Command(() => { });
-      }
-
-      protected AnimalViewModelBase()
-      : this(null)
-      {
       }
 
       public bool IAmBig

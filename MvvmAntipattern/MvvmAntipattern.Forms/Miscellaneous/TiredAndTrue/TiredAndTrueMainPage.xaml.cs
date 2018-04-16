@@ -26,12 +26,11 @@
 
 #endregion
 
-namespace MvvmAntipattern.Forms.TiredAndTrue
+namespace MvvmAntipattern.Forms.Miscellaneous.TiredAndTrue
 {
    #region Imports
 
    using Xamarin.Forms;
-   using Xamarin.Forms.Xaml;
 
    #endregion
 

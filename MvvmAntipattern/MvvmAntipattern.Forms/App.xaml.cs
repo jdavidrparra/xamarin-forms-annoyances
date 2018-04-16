@@ -36,7 +36,6 @@ namespace MvvmAntipattern.Forms
    using SharedForms.Common.Generators;
    using SharedForms.Common.Interfaces;
    using SharedForms.Common.Navigation;
-   using SharedForms.Common.Notifications;
    using SharedForms.Common.Utils;
    using SharedForms.Views.Pages;
    using SharedForms.Views.SubViews;
@@ -47,7 +46,6 @@ namespace MvvmAntipattern.Forms
 
    public partial class App
    {
-      private readonly IFormsMessenger _formsMessenger;
       private readonly IStateMachineBase _stateMachine;
       private Page _lastMainPage;
 
@@ -56,11 +54,8 @@ namespace MvvmAntipattern.Forms
          var appSetup = new FormsContainerSetup();
          AppContainer.GlobalVariableContainer = appSetup.CreateContainer();
 
-         using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
-         {
-            _formsMessenger = scope.Resolve<IFormsMessenger>();
-            _stateMachine = scope.Resolve<IStateMachineBase>();
-         }
+         // NOTE: Dependency without injection
+         _stateMachine = AppContainer.GlobalVariableContainer.Resolve<IStateMachineBase>();
 
          InitializeComponent();
 
@@ -93,31 +88,23 @@ namespace MvvmAntipattern.Forms
          RestartSettings();
       }
 
-      private void SetUpMenu()
-      {
-         // Ask for the menu to get generated in the background
-         _formsMessenger.Send(new MenuReflectionRequestMessage());
-      }
-
       private void RestartSettings()
       {
          SubscribeToPageChangedMessages();
-
-         SetUpMenu();
 
          _stateMachine?.GoToStartUpState();
       }
 
       private void SubscribeToPageChangedMessages()
       {
-         _formsMessenger?.Subscribe<MainPageChangeRequestMessage>(this, MainPageChanged);
-         _formsMessenger?.Subscribe<BindingContextChangeRequestMessage>(this, BindingContextPageChanged);
+         FormsMessengerUtils.Subscribe<MainPageChangeRequestMessage>(this, MainPageChanged);
+         FormsMessengerUtils.Subscribe<BindingContextChangeRequestMessage>(this, BindingContextPageChanged);
       }
 
       private void UsubscribeFromPageChangedMessages()
       {
-         _formsMessenger?.Unsubscribe<MainPageChangeRequestMessage>(this);
-         _formsMessenger?.Unsubscribe<BindingContextChangeRequestMessage>(this);
+         FormsMessengerUtils.Unsubscribe<MainPageChangeRequestMessage>(this);
+         FormsMessengerUtils.Unsubscribe<BindingContextChangeRequestMessage>(this);
       }
 
       private void MainPageChanged(object sender, MainPageChangeRequestMessage messageArgs)
@@ -138,21 +125,7 @@ namespace MvvmAntipattern.Forms
             return;
          }
 
-         // Notify the nav bar directly before the change so it can preserve the existing main page binding context app state
-         NavAndMenuBar.OnAppStateChanged(MainPage, messageArgs.PreventNavStackPush);
-
          MainPage = messageArgs.Payload;
-
-         // IMPORTANT -- The assignment above often fails to cause Page.Disappearing for some reason
-         if (_lastMainPage != null)
-         {
-            if (_lastMainPage is IDisposable lastMainPageAsDisposablew)
-            {
-               lastMainPageAsDisposablew.Dispose();
-            }
-
-            _lastMainPage = null;
-         }
 
          _lastMainPage = MainPage;
       }
@@ -161,9 +134,6 @@ namespace MvvmAntipattern.Forms
       {
          if (MainPage != null)
          {
-            // Same as with the page; the app state is about to change
-            NavAndMenuBar.OnAppStateChanged(MainPage, messageArgs.PreventNavStackPush);
-
             MainPage.BindingContext = messageArgs.Payload;
          }
       }

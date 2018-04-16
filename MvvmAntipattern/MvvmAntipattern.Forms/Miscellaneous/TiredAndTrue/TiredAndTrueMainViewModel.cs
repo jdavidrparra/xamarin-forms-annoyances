@@ -26,7 +26,7 @@
 
 #endregion
 
-namespace MvvmAntipattern.Forms.TiredAndTrue
+namespace MvvmAntipattern.Forms.Miscellaneous.TiredAndTrue
 {
    #region Imports
 

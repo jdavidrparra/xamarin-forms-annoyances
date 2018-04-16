@@ -33,7 +33,6 @@ namespace SharedForms.ViewModels
    using Autofac;
    using Common.Interfaces;
    using Common.Navigation;
-   using Common.Notifications;
    using PropertyChanged;
    using SharedGlobals.Container;
 
@@ -43,19 +42,12 @@ namespace SharedForms.ViewModels
    [DoNotNotify]
    public abstract class PageViewModelBase : IPageViewModelBase
    {
-      protected static readonly IFormsMessenger Messenger;
+      protected readonly IStateMachineBase Machine;
 
-      protected static readonly IStateMachineBase Machine;
-
-      static PageViewModelBase()
+      protected PageViewModelBase(IStateMachineBase stateMachine)
       {
-         using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
-         {
-            Messenger = scope.Resolve<IFormsMessenger>();
-
-            // Request the same interface that was created at the local Xamarin.Forms setup.
-            Machine = scope.Resolve<IStateMachineBase>();
-         }
+         // Request the global interface type so the code is more share-able.
+         Machine = stateMachine;
       }
 
       /// <summary>

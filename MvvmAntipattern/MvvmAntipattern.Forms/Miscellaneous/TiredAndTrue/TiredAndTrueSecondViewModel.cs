@@ -24,7 +24,7 @@
 // SOFTWARE.
 #endregion
 
-namespace MvvmAntipattern.Forms.TiredAndTrue
+namespace MvvmAntipattern.Forms.Miscellaneous.TiredAndTrue
 {
    public class TiredAndTrueSecondViewModel
    {

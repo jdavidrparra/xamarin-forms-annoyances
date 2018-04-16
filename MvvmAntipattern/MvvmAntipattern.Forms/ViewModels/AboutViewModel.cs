@@ -27,11 +27,15 @@ namespace MvvmAntipattern.Forms.ViewModels
 {
    using Common.Navigation;
    using PropertyChanged;
+   using SharedForms.Common.Navigation;
    using SharedForms.ViewModels;
 
    [AddINotifyPropertyChangedInterface]
    [DoNotNotify]
    public class AboutViewModel : PageViewModelBase
    {
+      public AboutViewModel(IStateMachineBase stateMachine) : base(stateMachine)
+      {
+      }
    }
 }

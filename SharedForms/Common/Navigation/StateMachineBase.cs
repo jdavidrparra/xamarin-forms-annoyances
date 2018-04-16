@@ -33,9 +33,10 @@ namespace SharedForms.Common.Navigation
    using System;
    using Autofac;
    using Interfaces;
-   using Notifications;
    using SharedGlobals.Container;
+   using Utils;
    using ViewModels;
+   using Views.SubViews;
    using Xamarin.Forms;
 
    #endregion
@@ -46,9 +47,6 @@ namespace SharedForms.Common.Navigation
       // string CurrentAppState { get; }
 
       IMenuNavigationState[] MenuItems { get; }
-
-      // Access to the forms messenger; also for convenience.
-      IFormsMessenger Messenger { get; set; }
 
       // The normal way of changing states
       void GoToAppState<T>(string newState, T payload = default(T), bool preventStackPush = false);
@@ -66,22 +64,23 @@ namespace SharedForms.Common.Navigation
    public abstract class StateMachineBase : IStateMachineBase
    {
       private Page _lastPage;
-
-      protected StateMachineBase()
-      {
-         using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
-         {
-            Messenger = scope.Resolve<IFormsMessenger>();
-         }
-      }
+      private string _lastAppState;
 
       public abstract string AppStartUpState { get; }
 
-      public IFormsMessenger Messenger { get; set; }
-
       public void GoToAppState<T>(string newState, T payload = default(T), bool preventStackPush = false)
       {
+         if (_lastAppState.IsSameAs(newState))
+         {
+            return;
+         }
+
+         // Raise an event to notify the nav bar that the back-stack requires modification.
+         // Send in the last app state, *not* the new one.
+         FormsMessengerUtils.Send(new AppStateChangedMessage(_lastAppState, preventStackPush));
+
          // CurrentAppState = newState;
+         _lastAppState = newState;
 
          // Not awaiting here because we do not directly change the Application.Current.MainPage.  That is done through a message.
          RespondToAppStateChange(newState, payload, preventStackPush);
@@ -94,7 +93,7 @@ namespace SharedForms.Common.Navigation
       // Sets the startup state for the app on initial start (or restart).
       public void GoToStartUpState()
       {
-         Messenger.Send(new AppStartUpMessage());
+         FormsMessengerUtils.Send(new AppStartUpMessage());
 
          GoToAppState<NoPayload>(AppStartUpState, null, true);
       }
@@ -115,7 +114,7 @@ namespace SharedForms.Common.Navigation
          // If the same page, keep it
          if (_lastPage != null && _lastPage.GetType() == pageType)
          {
-            Messenger.Send(new BindingContextChangeRequestMessage
+            FormsMessengerUtils.Send(new BindingContextChangeRequestMessage
             {
                Payload = viewModelCreator(),
                PreventNavStackPush = preventStackPush
@@ -127,7 +126,7 @@ namespace SharedForms.Common.Navigation
          var page = pageCreator();
          page.BindingContext = viewModelCreator();
 
-         Messenger.Send(new MainPageChangeRequestMessage
+         FormsMessengerUtils.Send(new MainPageChangeRequestMessage
          {
             Payload = page,
             PreventNavStackPush = preventStackPush

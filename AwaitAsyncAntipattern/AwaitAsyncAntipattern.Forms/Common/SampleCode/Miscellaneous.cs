@@ -44,7 +44,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
 
          var str2 = string.Empty;
 
-         Device.BeginInvokeOnMainThread(async () => str2 = await ReadStreamAsync().AwaitWithoutChangingContext());
+         Device.BeginInvokeOnMainThread(async () => str2 = await ReadStreamAsync().WithoutChangingContext());
 
          var dataExists = false;
          Device.BeginInvokeOnMainThread(async () => dataExists = await DataExists());
@@ -62,7 +62,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
 
       private async Task<bool> DataExists()
       {
-         var retStream = await ReadStreamAsync().AwaitWithoutChangingContext();
+         var retStream = await ReadStreamAsync().WithoutChangingContext();
          return retStream.Length > 0;
       }
    }

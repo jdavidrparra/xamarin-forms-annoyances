@@ -35,7 +35,6 @@ namespace SharedForms.Views.SubViews
    using Autofac;
    using Common.Interfaces;
    using Common.Navigation;
-   using Common.Notifications;
    using Common.Utils;
    using Controls;
    using Pages;
@@ -70,22 +69,17 @@ namespace SharedForms.Views.SubViews
       private Page _hostingPage;
       private Image _menuButton;
       private bool _menuButtonEntered;
-      private static readonly IStateMachineBase _stateMachine;
-      private static readonly IFormsMessenger _formsMessenger;
+      private static IStateMachineBase _stateMachine;
       private Label _titleLabel;
       private bool IsNavigationAvailable => _appStateBackButtonStack.IsNotEmpty();
 
-      static NavAndMenuBar()
+      /// <remarks>
+      /// Not used in the run-time app but can be called for unit testing.
+      /// </remarks>
+      public NavAndMenuBar(IStateMachineBase stateMachine)
       {
-         using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
-         {
-            _formsMessenger = scope.Resolve<IFormsMessenger>();
-            _stateMachine = scope.Resolve<IStateMachineBase>();
-         }
-      }
+         _stateMachine = stateMachine;
 
-      public NavAndMenuBar()
-      {
          BackgroundColor = Colors.HEADER_AND_TOOLBAR_COLOR_DEEP;
 
          if (Device.RuntimePlatform.IsSameAs(Device.iOS))
@@ -96,7 +90,20 @@ namespace SharedForms.Views.SubViews
          // Listen for the static page change
          AskToSetBackButtonVisiblity += SetBackButtonVisiblity;
 
-         _formsMessenger.Subscribe<MenuLoadedMessage>(this, OnMenuLoaded);
+         // These message are subscribed but never unsubscribed.
+         // The menu is global static, so persists throughout the life of the app.
+         // There is no reason to unsubscribe them under these circumstances.
+         FormsMessengerUtils.Subscribe<MenuLoadedMessage>(this, OnMenuLoaded);
+         FormsMessengerUtils.Subscribe<AppStateChangedMessage>(this, OnAppStateChanged);
+      }
+
+      /// <remarks>
+      /// Must be parameterless due to the XAML page control template at ap.xaml.
+      /// This makes  the menu non-testable, as this is a hidden dependency.
+      /// </remarks>
+      public NavAndMenuBar() :
+         this(AppContainer.GlobalVariableContainer.Resolve<IStateMachineBase>())
+      {
       }
 
       private bool IsMenuLoaded { get; set; }
@@ -216,30 +223,26 @@ namespace SharedForms.Views.SubViews
          }
       }
 
-      public static void OnAppStateChanged(Page oldPage, bool preventNavStackPush)
+      private void OnAppStateChanged(object sender, AppStateChangedMessage appStateChangedMessage)
       {
          // If the old page as a non-navigation page, it cannot go onto the back stack.
-         if (!(oldPage is IMenuNavPageBase) || !(oldPage.BindingContext is IMenuNavigationState))
+         if (appStateChangedMessage.Payload.OldAppState.IsEmpty())
          {
             // Wipe out the stack and restart
             _appStateBackButtonStack.Clear();
             return;
          }
 
-         // 1. Remove the old page state from the stack -- get rid of previous old pages
-         //    Note: Safe type-cast
-         var bindingContextAsPageViewModelBase = (IMenuNavigationState) oldPage.BindingContext;
-
          _appStateBackButtonStack.RemoveIfPresent
          (
-            bindingContextAsPageViewModelBase.AppState,
-            appState => appState.IsSameAs(bindingContextAsPageViewModelBase.AppState)
+            appStateChangedMessage.Payload.OldAppState,
+            appState => appState.IsSameAs(appStateChangedMessage.Payload.OldAppState)
          );
 
          // 2. Push the new app state
-         if (!preventNavStackPush)
+         if (!appStateChangedMessage.Payload.PreventNavStackPush)
          {
-            _appStateBackButtonStack.Push(bindingContextAsPageViewModelBase.AppState);
+            _appStateBackButtonStack.Push(appStateChangedMessage.Payload.OldAppState);
          }
 
          AskToSetBackButtonVisiblity?.Invoke();
@@ -269,7 +272,7 @@ namespace SharedForms.Views.SubViews
 
          // Notify the host page so it can close the menu.
          // Ask to close the menu as if the user tapped the hamburger icon.
-         _formsMessenger.Send(new NavBarMenuTappedMessage());
+         FormsMessengerUtils.Send(new NavBarMenuTappedMessage());
 
          _menuButtonEntered = false;
       }

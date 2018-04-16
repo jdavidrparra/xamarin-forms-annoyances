@@ -81,12 +81,12 @@ namespace AwaitAsyncAntipattern.Forms.ViewModels
             // Start of nested calls
             if (_listNum == 0 && NextList != null)
             {
-               await HandleNestedListLoadRequest().AwaitWithoutChangingContext();
+               await HandleNestedListLoadRequest().WithoutChangingContext();
             }
          }
          else
          {
-            await InitializeViewModel().AwaitWithoutChangingContext();
+            await InitializeViewModel().WithoutChangingContext();
          }
       }
 
@@ -94,17 +94,17 @@ namespace AwaitAsyncAntipattern.Forms.ViewModels
       {
          if (_isForegroundAwait && NextList != null)
          {
-            await NextList.HandleNestedListLoadRequest().AwaitWithoutChangingContext();
+            await NextList.HandleNestedListLoadRequest().WithoutChangingContext();
          }
 
-         await InitializeViewModel().AwaitWithoutChangingContext();
+         await InitializeViewModel().WithoutChangingContext();
       }
 
       private async Task InitializeViewModel()
       {
          if (_isForegroundAwait)
          {
-            await CallListLoad().AwaitWithoutChangingContext();
+            await CallListLoad().WithoutChangingContext();
          }
          else
          {
@@ -112,7 +112,7 @@ namespace AwaitAsyncAntipattern.Forms.ViewModels
             {
 #pragma warning disable 4014
                // NO AWAIT
-               Task.Run(async () => { await CallListLoad().AwaitWithoutChangingContext(); });
+               Task.Run(async () => { await CallListLoad().WithoutChangingContext(); });
 #pragma warning restore 4014
             }
             catch (Exception ex)
@@ -133,7 +133,7 @@ namespace AwaitAsyncAntipattern.Forms.ViewModels
          {
             SubList = returnList;
             PopulationCompleted?.Invoke();
-         }).AwaitWithoutChangingContext();
+         }).WithoutChangingContext();
       }
    }
 }

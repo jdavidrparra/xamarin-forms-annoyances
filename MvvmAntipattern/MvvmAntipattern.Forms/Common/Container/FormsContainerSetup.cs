@@ -6,7 +6,7 @@
    using Navigation;
    using SharedForms.Common.Generators;
    using SharedForms.Common.Navigation;
-   using SharedForms.Common.Notifications;
+   using SharedForms.Common.Utils;
    using SharedForms.Views.SubViews;
    using SharedGlobals.Container;
 
@@ -19,8 +19,10 @@
       {
          base.RegisterDependencies(containerBuilder);
 
-         containerBuilder.RegisterType<FormsMessenger>().As<IFormsMessenger>().SingleInstance();
+         // This is a single injection of a global state machine. It is not intended to be replacded during the life of the app.
          containerBuilder.RegisterType<FormsStateMachine>().As<IStateMachineBase>().SingleInstance();
+
+         // This is a single injection of a global menu system. It is not intended to be replacded during the life of the app.
          containerBuilder.RegisterType<MainMenu>().As<IMainMenu>().SingleInstance();
       }
    }

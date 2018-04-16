@@ -30,20 +30,14 @@ namespace MvvmAntipattern.Forms.ViewModels
    using Common.Navigation;
    using Models;
    using PropertyChanged;
+   using SharedForms.Common.Navigation;
    using Xamarin.Forms;
 
    [AddINotifyPropertyChangedInterface]
    [DoNotNotify]
    public class BirdViewModel : AnimalViewModelBase, IBird
    {
-      public BirdViewModel(IAnimalDataBase animalData) : base(animalData)
-      {
-      }
-
-      /// <summary>
-      /// Necessary for menu reflection. Otherwise harmless :)
-      /// </summary>
-      public BirdViewModel() : this(null)
+      public BirdViewModel(IStateMachineBase stateMachine, IAnimalDataBase animalData) : base(stateMachine, animalData)
       {
       }
 

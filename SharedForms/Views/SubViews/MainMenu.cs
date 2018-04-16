@@ -34,7 +34,6 @@ namespace SharedForms.Views.SubViews
    using Autofac;
    using Common.Interfaces;
    using Common.Navigation;
-   using Common.Notifications;
    using Common.Utils;
    using Pages;
    using SharedGlobals.Container;
@@ -63,16 +62,11 @@ namespace SharedForms.Views.SubViews
       private static readonly double MENU_ITEM_HEIGHT = 40.0;
       private static readonly double MAIN_MENU_OPACITY = 0.95;
       private readonly IStateMachineBase _stateMachine;
-      private readonly IFormsMessenger _formsMessenger;
       private bool _isMenuLoaded;
 
-      public MainMenu()
+      public MainMenu(IStateMachineBase stateMachine)
       {
-         using (var scope = AppContainer.GlobalVariableContainer.BeginLifetimeScope())
-         {
-            _stateMachine = scope.Resolve<IStateMachineBase>();
-            _formsMessenger = scope.Resolve<IFormsMessenger>();
-         }
+         _stateMachine = stateMachine;
 
          // Not really used
          BindingContext = this;
@@ -95,7 +89,7 @@ namespace SharedForms.Views.SubViews
          {
             _isMenuLoaded = value; 
             
-            _formsMessenger.Send(new MenuLoadedMessage());
+            FormsMessengerUtils.Send(new MenuLoadedMessage());
          }
       }
 
@@ -150,7 +144,7 @@ namespace SharedForms.Views.SubViews
          retButton.Clicked += (s, e) =>
             {
                // Ask to close the menu as if the user tapped the hamburger icon.
-               _formsMessenger.Send(new NavBarMenuTappedMessage());
+               FormsMessengerUtils.Send(new NavBarMenuTappedMessage());
 
                _stateMachine.GoToAppState<IMenuNavigationState>(menuData.AppState, menuData);
             };

@@ -43,7 +43,7 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
 
       public MyDeviceViewModel()
       {
-         RetryStartDeviceCommand = new Command(async () => { await StartDevice().AwaitWithoutChangingContext(); });
+         RetryStartDeviceCommand = new Command(async () => { await StartDevice().WithoutChangingContext(); });
       }
 
       // A clever programmer has decided to add a button to the UI to retry if the device appears to fail to start up. The button is tied to this command.
@@ -53,10 +53,10 @@ namespace AwaitAsyncAntipattern.Forms.Common.SampleCode
       public async Task InitializeViewModel()
       {
          // Benignly ask to start the device – foreground await
-         await StartDevice().AwaitWithoutChangingContext();
+         await StartDevice().WithoutChangingContext();
 
          // This call relies on the device Feature that fails to construct.
-         await SomeVeryLongRunningTask(_device.Feature).AwaitWithoutChangingContext();
+         await SomeVeryLongRunningTask(_device.Feature).WithoutChangingContext();
       }
 
       private Task<SomeDevice> StartDevice()
