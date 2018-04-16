@@ -123,13 +123,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Bogus">
-      <Version>22.0.7</Version>
+      <Version>22.0.8</Version>
     </PackageReference>
     <PackageReference Include="Fody">
-      <Version>3.0.1</Version>
+      <Version>3.0.3</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.4.0</Version>
+      <Version>2.5.3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
       <Version>2.4.0.91020</Version>

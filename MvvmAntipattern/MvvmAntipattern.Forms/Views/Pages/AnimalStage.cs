@@ -33,6 +33,7 @@ namespace MvvmAntipattern.Forms.Views.Pages
    using Xamarin.Forms.Plugin.CustomToggleButton;
 
    public class AnimalStage : MenuNavPageBase<IAnimalViewModelBase>
+
    {
       protected override View ConstructPageView()
       {

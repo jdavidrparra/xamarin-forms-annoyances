@@ -33,12 +33,5 @@ namespace MvvmAntipattern.Forms.ViewModels
    [DoNotNotify]
    public class AboutViewModel : PageViewModelBase
    {
-      public override string ViewTitle => "About";
-
-      public override string MenuTitle => ViewTitle;
-
-      public override string AppState => FormsStateMachine.ABOUT_APP_STATE;
-
-      public override int MenuOrder => FormsStateMachine.GetMenuOrderFromAppState(AppState);
    }
 }

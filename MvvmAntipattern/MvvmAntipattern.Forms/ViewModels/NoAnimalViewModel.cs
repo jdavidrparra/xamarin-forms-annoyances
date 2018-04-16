@@ -56,17 +56,5 @@ namespace MvvmAntipattern.Forms.ViewModels
       /// Bury this; nwe don't use it
       /// </summary>
       public override string MyImageSource => "";
-
-      // Not implemented
-      public override Command MakeNoiseCommand => new Command(() =>{});
-
-      // Not implemented
-      public override Command MoveCommand => new Command(() => { });
-
-      public override int MenuOrder => FormsStateMachine.GetMenuOrderFromAppState(AppState);
-
-      public override string AppState => FormsStateMachine.NO_ANIMAL_APP_STATE;
-
-      public override string MenuTitle => ViewTitle;
    }
 }

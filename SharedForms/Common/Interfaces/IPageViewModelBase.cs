@@ -23,25 +23,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #endregion
+
 namespace SharedForms.Common.Interfaces
 {
-   /// <summary>
-   ///    A view model base for pages.
-   /// </summary>
-   public interface IPageViewModelBase
+   using ViewModels;
+
+   public interface IPageViewModelBase : IViewModelBase
    {
-      int MenuOrder { get; }
-
       /// <summary>
-      /// Th menu title
+      /// Copied from the menu item to this page (at least for now)
       /// </summary>
-      string MenuTitle { get; }
-
-      /// <summary>
-      /// The page or view title
-      /// </summary>
-      string ViewTitle { get; }
-
-      string AppState { get; }
+      string PageTitle { get; set; }
    }
 }

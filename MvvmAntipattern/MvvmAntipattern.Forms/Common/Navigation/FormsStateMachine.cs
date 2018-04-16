@@ -32,6 +32,8 @@ namespace MvvmAntipattern.Forms.Common.Navigation
 
    using System;
    using Models;
+   using SharedForms.Common.Generators;
+   using SharedForms.Common.Interfaces;
    using SharedForms.Common.Navigation;
    using SharedForms.Common.Notifications;
    using SharedForms.ViewModels;
@@ -71,38 +73,51 @@ namespace MvvmAntipattern.Forms.Common.Navigation
 
       public override string AppStartUpState => AUTO_SIGN_IN_APP_STATE;
 
+      public override IMenuNavigationState[] MenuItems => 
+         new IMenuNavigationState[]
+         {
+            new MenuNavigationState(GetMenuOrderFromAppState(ABOUT_APP_STATE), ABOUT_APP_STATE, "About", ABOUT_APP_STATE),
+            new MenuNavigationState(GetMenuOrderFromAppState(BIRD_ANIMAL_APP_STATE), BIRD_ANIMAL_APP_STATE, "ANIMALS", BIRD_ANIMAL_APP_STATE),
+            new MenuNavigationState(GetMenuOrderFromAppState(CAT_ANIMAL_APP_STATE), CAT_ANIMAL_APP_STATE, "ANIMALS", CAT_ANIMAL_APP_STATE),
+            new MenuNavigationState(GetMenuOrderFromAppState(DOG_ANIMAL_APP_STATE), DOG_ANIMAL_APP_STATE, "ANIMALS", DOG_ANIMAL_APP_STATE),
+            new MenuNavigationState(GetMenuOrderFromAppState(NO_ANIMAL_APP_STATE), NO_ANIMAL_APP_STATE, "ANIMALS", NO_ANIMAL_APP_STATE),
+            new MenuNavigationState(GetMenuOrderFromAppState(ABOUT_APP_STATE), PREFERENCES_APP_STATE, "Preferences", PREFERENCES_APP_STATE),
+         };
+
       public override void GoToLandingPage(bool preventStackPush = true)
       {
          GoToAppState<NoPayload>(NO_ANIMAL_APP_STATE, null, preventStackPush);
       }
 
-      protected override void RespondToAppStateChange(string newState, object payload, bool preventStackPush)
+      protected override void RespondToAppStateChange<PayloadT>(string newState, PayloadT payload, bool preventStackPush)
       {
+         var titleStr = payload is IMenuNavigationState pageAsNavState ? pageAsNavState.ViewTitle : "";
+
          switch (newState)
          {
             case ABOUT_APP_STATE:
-               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new AboutViewModel(), preventStackPush);
+               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new AboutViewModel() {PageTitle = titleStr}, preventStackPush);
                break;
 
             case PREFERENCES_APP_STATE:
-               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new PreferencesViewModel(), preventStackPush);
+               CheckAgainstLastPage(typeof(DummyPage), () => new DummyPage(), () => new PreferencesViewModel() { PageTitle = titleStr }, preventStackPush);
                break;
 
             case CAT_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new CatViewModel(new CatData()), preventStackPush);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new CatViewModel(new CatData()) { PageTitle = titleStr }, preventStackPush);
                break;
 
             case BIRD_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new BirdViewModel(new BirdData()), preventStackPush);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new BirdViewModel(new BirdData()) { PageTitle = titleStr }, preventStackPush);
                break;
 
             case DOG_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new DogViewModel(new DogData()), preventStackPush);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new DogViewModel(new DogData()) { PageTitle = titleStr }, preventStackPush);
                break;
 
             default:
                //NO_ANIMAL_APP_STATE:
-               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new NoAnimalViewModel(), true);
+               CheckAgainstLastPage(typeof(AnimalStage), () => new AnimalStage(), () => new NoAnimalViewModel() { PageTitle = titleStr }, true);
                break;
          }
       }

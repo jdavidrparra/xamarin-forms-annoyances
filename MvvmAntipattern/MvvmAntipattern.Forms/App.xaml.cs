@@ -50,7 +50,6 @@ namespace MvvmAntipattern.Forms
       private readonly IFormsMessenger _formsMessenger;
       private readonly IStateMachineBase _stateMachine;
       private Page _lastMainPage;
-      private IMenuGenerator _generator;
 
       public App()
       {
@@ -61,7 +60,6 @@ namespace MvvmAntipattern.Forms
          {
             _formsMessenger = scope.Resolve<IFormsMessenger>();
             _stateMachine = scope.Resolve<IStateMachineBase>();
-            _generator = scope.Resolve<IMenuGenerator>();
          }
 
          InitializeComponent();

@@ -106,8 +106,4 @@ namespace SharedForms.Common.Notifications
    public class MenuLoadedMessage : NoPayloadMessage
    {
    }
-
-   public class MenuReflectionResultMessage : GenericMessageWithPayload<IMenuData[]>
-   {
-   }
 }

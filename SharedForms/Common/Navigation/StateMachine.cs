@@ -32,6 +32,7 @@ namespace SharedForms.Common.Navigation
 
    using System;
    using Autofac;
+   using Interfaces;
    using Notifications;
    using SharedGlobals.Container;
    using ViewModels;
@@ -42,7 +43,9 @@ namespace SharedForms.Common.Navigation
    public interface IStateMachineBase : IDisposable
    {
       // A way of knowing the current app state, though this should not be commonly referenced.
-      string CurrentAppState { get; }
+      // string CurrentAppState { get; }
+
+      IMenuNavigationState[] MenuItems { get; }
 
       // Access to the forms messenger; also for convenience.
       IFormsMessenger Messenger { get; set; }
@@ -78,13 +81,15 @@ namespace SharedForms.Common.Navigation
 
       public void GoToAppState<T>(string newState, T payload = default(T), bool preventStackPush = false)
       {
-         CurrentAppState = newState;
+         // CurrentAppState = newState;
 
          // Not awaiting here because we do not directly change the Application.Current.MainPage.  That is done through a message.
          RespondToAppStateChange(newState, payload, preventStackPush);
       }
 
-      public string CurrentAppState { get; private set; }
+      // public string CurrentAppState { get; private set; }
+
+      public abstract IMenuNavigationState[] MenuItems { get; }
 
       // Sets the startup state for the app on initial start (or restart).
       public void GoToStartUpState()
@@ -102,7 +107,7 @@ namespace SharedForms.Common.Navigation
          GC.SuppressFinalize(this);
       }
 
-      protected abstract void RespondToAppStateChange(string newState, object payload, bool preventStackPush);
+      protected abstract void RespondToAppStateChange<PayloadT>(string newState, PayloadT payload, bool preventStackPush);
 
       protected void CheckAgainstLastPage(Type pageType, Func<Page> pageCreator, Func<IViewModelBase> viewModelCreator,
          bool preventStackPush)

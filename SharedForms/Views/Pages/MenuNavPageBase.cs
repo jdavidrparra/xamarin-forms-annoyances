@@ -131,8 +131,6 @@ namespace SharedForms.Views.Pages
                   );
 
             await Task.WhenAll(new [] { PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicIn), PageMenuView.FadeTo(1.0, MENU_FADE_MILLISECONDS)});
-            //await PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicIn);
-            //await PageMenuView.FadeTo(1.0, MENU_FADE_MILLISECONDS);
          }
          else
          {
@@ -140,8 +138,6 @@ namespace SharedForms.Views.Pages
             var rect = CreateOfflineRectangle();
 
             await Task.WhenAll(new[] { PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicOut), PageMenuView.FadeTo(0.0, MENU_FADE_MILLISECONDS) });
-            //await PageMenuView.LayoutTo(rect, MENU_ANIMATE_MILLISECONDS, Easing.CubicOut);
-            //await PageMenuView.FadeTo(0.0, MENU_FADE_MILLISECONDS);
          }
       }
 

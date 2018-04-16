@@ -21,7 +21,6 @@
 
          containerBuilder.RegisterType<FormsMessenger>().As<IFormsMessenger>().SingleInstance();
          containerBuilder.RegisterType<FormsStateMachine>().As<IStateMachineBase>().SingleInstance();
-         containerBuilder.RegisterType<MenuGenerator>().As<IMenuGenerator>().SingleInstance();
          containerBuilder.RegisterType<MainMenu>().As<IMainMenu>().SingleInstance();
       }
    }

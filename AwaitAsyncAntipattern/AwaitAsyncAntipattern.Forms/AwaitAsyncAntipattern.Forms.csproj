@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="22.0.7" />
-    <PackageReference Include="Fody" Version="3.0.1" />
-    <PackageReference Include="PropertyChanged.Fody" Version="2.4.0" />
+    <PackageReference Include="Bogus" Version="22.0.8" />
+    <PackageReference Include="Fody" Version="3.0.3" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.5.3" />
     <PackageReference Include="Xamarin.Forms" Version="2.4.0.91020" />
   </ItemGroup>
 

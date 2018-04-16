@@ -41,7 +41,7 @@ namespace SharedForms.ViewModels
 
    [AddINotifyPropertyChangedInterface]
    [DoNotNotify]
-   public abstract class PageViewModelBase : ViewModelBase, IPageViewModelBase
+   public abstract class PageViewModelBase : IPageViewModelBase
    {
       protected static readonly IFormsMessenger Messenger;
 
@@ -53,17 +53,14 @@ namespace SharedForms.ViewModels
          {
             Messenger = scope.Resolve<IFormsMessenger>();
 
-            // *Must* get the same interface that was created at setup.
+            // Request the same interface that was created at the local Xamarin.Forms setup.
             Machine = scope.Resolve<IStateMachineBase>();
          }
       }
 
-      public abstract int MenuOrder { get; }
-
-      public abstract string MenuTitle { get; }
-
-      public abstract string ViewTitle { get; }
-
-      public abstract string AppState { get; }
+      /// <summary>
+      /// Copied from the menu item to this page (at least for now)
+      /// </summary>
+      public string PageTitle { get; set; }
    }
 }

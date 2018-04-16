@@ -51,11 +51,6 @@ namespace SharedForms.Views.Pages
    {
       protected static readonly IFormsMessenger Messenger;
 
-      //private static readonly double TOP_MARGIN = 50.0;
-      //private static readonly double STACK_MARGIN = 25.0;
-      //private static readonly double INSET = 50.0;
-      //private static readonly double PAGE_CONTENT_SPACING = 12.0;
-
       private readonly RelativeLayout _contentRelativeLayout = FormsUtils.GetExpandingRelativeLayout();
 
       static TypeSafePageBase()
@@ -102,31 +97,6 @@ namespace SharedForms.Views.Pages
             var derivedView = ConstructPageView();
 
             _contentRelativeLayout.CreateRelativeOverlay(derivedView);
-
-            /*
-            // Use a stack layout to keep the message indicator apart
-            var titleLayout = FormsUtils.GetExpandingStackLayout();
-            titleLayout.Margin = STACK_MARGIN;
-            titleLayout.Spacing = PAGE_CONTENT_SPACING;
-            titleLayout.VerticalOptions = LayoutOptions.StartAndExpand;
-
-            // Need a little expander at the top
-            var expander = FormsUtils.GetSpacer(TOP_MARGIN);
-            titleLayout.Children.Add(expander);
-
-            // Add the message, if any
-            var titleLabel =
-               FormsUtils.GetSimpleLabel(fontNamedSize: NamedSize.Large, fontAttributes: FontAttributes.Bold);
-            titleLabel.BindingContext = BindingContext;
-            titleLayout.Children.Add(titleLabel);
-
-            _contentRelativeLayout.Children.Add(
-               titleLayout,
-               Constraint.RelativeToParent(parent => parent.X + INSET),
-               Constraint.RelativeToParent(parent => parent.Y + INSET),
-               Constraint.RelativeToParent(parent => parent.Width - 2 * INSET),
-               Constraint.RelativeToParent(parent => parent.Height));
-            */
 
             Content = _contentRelativeLayout;
 

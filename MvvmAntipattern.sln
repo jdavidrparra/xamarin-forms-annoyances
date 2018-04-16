@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmAntipattern.Android", "
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmAntipattern.iOS", "MvvmAntipattern\MvvmAntipattern.iOS\MvvmAntipattern.iOS.csproj", "{3EA2D4F7-EB51-4417-AD4C-A6D519688B2F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9BEF3999-4B26-4B18-ADCB-DA82F71E7D27} = {9BEF3999-4B26-4B18-ADCB-DA82F71E7D27}
+		{0DA150A5-65A4-41A5-A626-2D4131BE3710} = {0DA150A5-65A4-41A5-A626-2D4131BE3710}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvvmAntipattern.Forms", "MvvmAntipattern\MvvmAntipattern.Forms\MvvmAntipattern.Forms.csproj", "{CF47454B-2502-4E72-885C-BD36C1B91265}"
 EndProject

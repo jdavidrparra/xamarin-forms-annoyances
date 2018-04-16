@@ -39,7 +39,7 @@ namespace SharedForms.Common.Interfaces
    /// <typeparam name="T">
    ///    the type of ViewModel
    /// </typeparam>
-   public interface IHavePageViewModel<out T> where T : class, IPageViewModelBase
+   public interface IHavePageViewModel<out T> where T : class
    {
       /// <summary>
       ///    Gets the view model.

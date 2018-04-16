@@ -24,35 +24,28 @@
 // SOFTWARE.
 #endregion
 
-namespace SharedForms.Common.Generators
+namespace SharedForms.Common.Interfaces
 {
-   using System;
-   using Interfaces;
-
-   public interface IMenuData : IPageViewModelBase
+   /// <summary>
+   ///    A view model base for pages.
+   /// </summary>
+   public interface IMenuNavigationState
    {
-      Type ClassType { get; }
-   }
+      int MenuOrder { get; }
 
-   public class MenuData : IMenuData
-   {
-      public MenuData(Type classType, int menuOrder, string menuTitle, string viewTitle, string appState)
-      {
-         ClassType = classType;
-         MenuOrder = menuOrder;
-         MenuTitle = menuTitle;
-         ViewTitle = viewTitle;
-         AppState = appState;
-      }
+      /// <summary>
+      /// The menu title
+      /// </summary>
+      string MenuTitle { get; }
 
-      public Type ClassType { get; }
+      /// <summary>
+      /// The page or view title (default: centered on the page)
+      /// </summary>
+      string ViewTitle { get; }
 
-      public int MenuOrder { get; }
-
-      public string MenuTitle { get; }
-
-      public string ViewTitle { get; }
-
-      public string AppState { get; }
+      /// <summary>
+      /// The app state to navigate to
+      /// </summary>
+      string AppState { get; }
    }
 }

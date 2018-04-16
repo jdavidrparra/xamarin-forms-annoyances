@@ -144,19 +144,24 @@ namespace SharedForms.Views.SubViews
                 _menuButton.HorizontalOptions = LayoutOptions.End;
                _menuButton.SetUpBinding(IsVisibleProperty, nameof(IsMenuLoaded));
                grid.Children.Add(_menuButton, 3, 0);
+
+               // Bind the title, center with margins and overlay
+               // Currently depends on the page being navigable
+               _titleLabel =
+                  FormsUtils.GetSimpleLabel
+                  (
+                     textColor: Color.White,
+                     fontNamedSize: NamedSize.Large,
+                     fontAttributes: FontAttributes.Bold,
+                     textAlignment: TextAlignment.Start,
+                     labelBindingPropertyName: nameof(IPageViewModelBase.PageTitle)
+                  );
+               _titleLabel.BackgroundColor = Color.Transparent;
+               _titleLabel.HorizontalOptions = LayoutOptions.Center;
+               _titleLabel.LineBreakMode = LineBreakMode.WordWrap;
+
+               grid.Children.Add(_titleLabel, 2, 0);
             }
-
-            // Bind the title, center with margins and overlay
-            // NOTE: At this point, the title is always empty.
-            _titleLabel =
-               FormsUtils.GetSimpleLabel(textColor: Color.White, fontNamedSize: NamedSize.Large,
-                  fontAttributes: FontAttributes.Bold, textAlignment: TextAlignment.Start);
-            _titleLabel.BackgroundColor = Color.Transparent;
-            _titleLabel.HorizontalOptions = LayoutOptions.Center;
-            _titleLabel.LineBreakMode = LineBreakMode.WordWrap;
-            _titleLabel.SetUpBinding(Label.TextProperty, nameof(IPageViewModelBase.ViewTitle));
-
-            grid.Children.Add(_titleLabel, 2, 0);
 
             Content = grid;
 
@@ -214,7 +219,7 @@ namespace SharedForms.Views.SubViews
       public static void OnAppStateChanged(Page oldPage, bool preventNavStackPush)
       {
          // If the old page as a non-navigation page, it cannot go onto the back stack.
-         if (!(oldPage is IMenuNavPageBase) || !(oldPage.BindingContext is IPageViewModelBase))
+         if (!(oldPage is IMenuNavPageBase) || !(oldPage.BindingContext is IMenuNavigationState))
          {
             // Wipe out the stack and restart
             _appStateBackButtonStack.Clear();
@@ -223,7 +228,7 @@ namespace SharedForms.Views.SubViews
 
          // 1. Remove the old page state from the stack -- get rid of previous old pages
          //    Note: Safe type-cast
-         var bindingContextAsPageViewModelBase = (IPageViewModelBase) oldPage.BindingContext;
+         var bindingContextAsPageViewModelBase = (IMenuNavigationState) oldPage.BindingContext;
 
          _appStateBackButtonStack.RemoveIfPresent
          (

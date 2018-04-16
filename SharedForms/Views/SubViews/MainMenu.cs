@@ -32,6 +32,7 @@ namespace SharedForms.Views.SubViews
 
    using System;
    using Autofac;
+   using Common.Interfaces;
    using Common.Navigation;
    using Common.Notifications;
    using Common.Utils;
@@ -48,7 +49,7 @@ namespace SharedForms.Views.SubViews
       double MenuHeight { get; }
    }
 
-   public class MainMenu : ContentView, IMainMenu, IDisposable
+   public class MainMenu : ContentView, IMainMenu
    {
       private const bool ALLOW_EVENT_TUNNELING = false;
 
@@ -71,8 +72,6 @@ namespace SharedForms.Views.SubViews
          {
             _stateMachine = scope.Resolve<IStateMachineBase>();
             _formsMessenger = scope.Resolve<IFormsMessenger>();
-
-            _formsMessenger.Subscribe<MenuReflectionResultMessage>(this, OnMenuReflectionResult);
          }
 
          // Not really used
@@ -85,6 +84,8 @@ namespace SharedForms.Views.SubViews
          Opacity = MAIN_MENU_OPACITY;
 
          InputTransparent = ALLOW_EVENT_TUNNELING;
+
+         LoadMenuFromStateMachine();
       }
 
       public bool IsMenuLoaded
@@ -100,7 +101,7 @@ namespace SharedForms.Views.SubViews
 
       public double MenuHeight { get; private set; }
 
-      private void OnMenuReflectionResult(object sender, MenuReflectionResultMessage args)
+      private void LoadMenuFromStateMachine()
       {
          // A grid to handle the entire menu
          var menuStack = FormsUtils.GetExpandingStackLayout();
@@ -115,9 +116,9 @@ namespace SharedForms.Views.SubViews
          // Allow for the top and bottom margins, etc.
          MenuHeight = 2 * MENU_OUTSIDE_SINGLE_MARGIN;
 
-         foreach (var menuData in args.Payload)
+         foreach (var menuData in _stateMachine.MenuItems)
          {
-            menuStack.Children.Add(CreateMenuItemButton(menuData.MenuTitle, menuData.AppState));
+            menuStack.Children.Add(CreateMenuItemButton(menuData));
             MenuHeight += singleMenuItemHeight;
          }
 
@@ -133,12 +134,12 @@ namespace SharedForms.Views.SubViews
          IsMenuLoaded = true;
       }
 
-      private Button CreateMenuItemButton(string title, string appState)
+      private Button CreateMenuItemButton(IMenuNavigationState menuData)
       {
          var retButton = 
             new Button
                {
-                  Text = title,
+                  Text = menuData.MenuTitle,
                   WidthRequest = MENU_ITEM_WIDTH,
                   HeightRequest = MENU_ITEM_HEIGHT,
                   HorizontalOptions = LayoutOptions.Center,
@@ -151,35 +152,10 @@ namespace SharedForms.Views.SubViews
                // Ask to close the menu as if the user tapped the hamburger icon.
                _formsMessenger.Send(new NavBarMenuTappedMessage());
 
-               _stateMachine.GoToAppState<NoPayload>(appState); 
+               _stateMachine.GoToAppState<IMenuNavigationState>(menuData.AppState, menuData);
             };
 
          return retButton;
-      }
-
-      private void ReleaseUnmanagedResources()
-      {
-         _formsMessenger.Unsubscribe<MenuReflectionResultMessage>(this);
-      }
-
-      private void Dispose(bool disposing)
-      {
-         ReleaseUnmanagedResources();
-         if (disposing)
-         {
-            _stateMachine?.Dispose();
-         }
-      }
-
-      public void Dispose()
-      {
-         Dispose(true);
-         GC.SuppressFinalize(this);
-      }
-
-      ~MainMenu()
-      {
-         Dispose(false);
       }
    }
 }

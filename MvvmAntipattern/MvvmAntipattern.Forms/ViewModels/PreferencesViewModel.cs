@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #endregion
+
 namespace MvvmAntipattern.Forms.ViewModels
 {
    using Common.Navigation;
@@ -33,12 +34,5 @@ namespace MvvmAntipattern.Forms.ViewModels
    [DoNotNotify]
    public class PreferencesViewModel : PageViewModelBase
    {
-      public override string ViewTitle => "Preferences";
-
-      public override string MenuTitle => ViewTitle;
-
-      public override string AppState => FormsStateMachine.PREFERENCES_APP_STATE;
-
-      public override int MenuOrder => FormsStateMachine.GetMenuOrderFromAppState(AppState);
    }
 }

@@ -50,17 +50,5 @@ namespace MvvmAntipattern.Forms.ViewModels
       public override string WhatAmI => "A Bird";
 
       public override string LikeToEat => IAmBig ? "Paragliders" : "Seeds";
-
-      // Not implemented
-      public override Command MakeNoiseCommand => new Command(() =>{});
-
-      // Not implemented
-      public override Command MoveCommand => new Command(() => { });
-
-      public override string AppState => FormsStateMachine.BIRD_ANIMAL_APP_STATE;
-
-      public override int MenuOrder => FormsStateMachine.GetMenuOrderFromAppState(AppState);
-
-      public override string MenuTitle => "Bird";
    }
 }

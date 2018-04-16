@@ -35,7 +35,7 @@ namespace MvvmAntipattern.Forms.ViewModels
    using SharedForms.ViewModels;
    using Xamarin.Forms;
 
-   public interface IAnimalViewModelBase : IAnimal, IPageViewModelBase, INotifyPropertyChanged
+   public interface IAnimalViewModelBase : IAnimal, INotifyPropertyChanged, IPageViewModelBase
    {
    }
 
@@ -52,6 +52,10 @@ namespace MvvmAntipattern.Forms.ViewModels
       protected AnimalViewModelBase(IAnimalDataBase animalData)
       {
          _animalData = animalData;
+
+         // These commands are not currently used
+         MakeNoiseCommand = new Command(() => { });
+         MoveCommand = new Command(() => { });
       }
 
       protected AnimalViewModelBase()
@@ -83,9 +87,9 @@ namespace MvvmAntipattern.Forms.ViewModels
 
       public abstract string LikeToEat { get; }
 
-      public abstract Command MakeNoiseCommand { get; }
+      public Command MakeNoiseCommand { get; }
 
-      public abstract Command MoveCommand { get; }
+      public Command MoveCommand { get; }
 
       public event PropertyChangedEventHandler PropertyChanged;
 
@@ -93,7 +97,5 @@ namespace MvvmAntipattern.Forms.ViewModels
       {
          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
       }
-
-      public override string ViewTitle => "ANIMALS";
    }
 }
