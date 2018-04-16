@@ -1,4 +1,5 @@
 ﻿#region License
+
 // MIT License
 // 
 // Copyright (c) 2018 
@@ -22,10 +23,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 #endregion
 
 namespace SharedForms.Common.Generators
 {
+   #region Imports
+
    using System;
    using System.Collections.Generic;
    using System.Diagnostics;
@@ -34,20 +38,20 @@ namespace SharedForms.Common.Generators
    using System.Threading.Tasks;
    using Autofac;
    using Interfaces;
-   using Microsoft.Extensions.DependencyModel;
    using Notifications;
    using SharedGlobals.Container;
    using Xamarin.Forms;
 
+   #endregion
+
    public interface IMenuGenerator : IDisposable
    {
-      
    }
 
    public class MenuGenerator : IMenuGenerator
    {
-      public IDictionary<Type, MenuData> ReflectedMenuData = new Dictionary<Type, MenuData>();
       private readonly IFormsMessenger _formsMessenger;
+      public IDictionary<Type, MenuData> ReflectedMenuData = new Dictionary<Type, MenuData>();
 
       public MenuGenerator()
       {
@@ -57,6 +61,12 @@ namespace SharedForms.Common.Generators
 
             _formsMessenger.Subscribe<MenuReflectionRequestMessage>(this, OnMenuReflectionRequest);
          }
+      }
+
+      public void Dispose()
+      {
+         ReleaseUnmanagedResources();
+         GC.SuppressFinalize(this);
       }
 
       private void OnMenuReflectionRequest(object o, MenuReflectionRequestMessage menuReflectionRequestMessage)
@@ -69,16 +79,19 @@ namespace SharedForms.Common.Generators
          try
          {
             Task.Run
-               (
-                  () =>
+            (
+               () =>
+               {
+                  ReflectedMenuData.Clear();
+
+                  var menuDataToPublish = CreateMenuData();
+
+                  Device.BeginInvokeOnMainThread(() =>
                   {
-                     ReflectedMenuData.Clear();
-
-                     var menuDataToPublish = CreateMenuData();
-
-                     Device.BeginInvokeOnMainThread(() => { _formsMessenger.Send(new MenuReflectionResultMessage { Payload = menuDataToPublish }); });
-                  }
-               );
+                     _formsMessenger.Send(new MenuReflectionResultMessage { Payload = menuDataToPublish });
+                  });
+               }
+            );
          }
          catch (Exception ex)
          {
@@ -90,7 +103,8 @@ namespace SharedForms.Common.Generators
       {
          // var platform = Environment.OSVersion.Platform.ToString();
          // var runtimeAssemblyNames = DependencyContext.Default.GetRuntimeAssemblyNames(platform);
-         var runtimeAssemblyNames = AppDomain.CurrentDomain.GetAssemblies().SelectMany(ass => ass.GetReferencedAssemblies()).Distinct();
+         var runtimeAssemblyNames = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(ass => ass.GetReferencedAssemblies()).Distinct();
 
          return runtimeAssemblyNames
             .Select(Assembly.Load)
@@ -112,7 +126,8 @@ namespace SharedForms.Common.Generators
 
                if (classInstance is IPageViewModelBase viewModelClass)
                {
-                  retMenuData.Add( new MenuData( classType, viewModelClass.MenuOrder, viewModelClass.MenuTitle, viewModelClass.ViewTitle, viewModelClass.AppState ) );
+                  retMenuData.Add(new MenuData(classType, viewModelClass.MenuOrder, viewModelClass.MenuTitle,
+                     viewModelClass.ViewTitle, viewModelClass.AppState));
                }
 
                if (classInstance is IDisposable disposable)
@@ -128,12 +143,6 @@ namespace SharedForms.Common.Generators
       private void ReleaseUnmanagedResources()
       {
          _formsMessenger.Unsubscribe<MenuReflectionRequestMessage>(this);
-      }
-
-      public void Dispose()
-      {
-         ReleaseUnmanagedResources();
-         GC.SuppressFinalize(this);
       }
 
       ~MenuGenerator()

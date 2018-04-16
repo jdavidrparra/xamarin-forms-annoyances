@@ -44,6 +44,9 @@ namespace SharedForms.Common.Navigation
       // A way of knowing the current app state, though this should not be commonly referenced.
       string CurrentAppState { get; }
 
+      // Access to the forms messenger; also for convenience.
+      IFormsMessenger Messenger { get; set; }
+
       // The normal way of changing states
       void GoToAppState<T>(string newState, T payload = default(T), bool preventStackPush = false);
 
@@ -52,13 +55,10 @@ namespace SharedForms.Common.Navigation
 
       // Goes to the default landing page; for convenience only
       void GoToLandingPage(bool preventStackPush = true);
-
-      // Access to the forms messenger; also for convenience.
-      IFormsMessenger Messenger { get; set; }
    }
 
    /// <summary>
-   /// A controller to manage which views and view models are shown for a given state
+   ///    A controller to manage which views and view models are shown for a given state
    /// </summary>
    public abstract class StateMachineBase : IStateMachineBase
    {
@@ -72,6 +72,8 @@ namespace SharedForms.Common.Navigation
          }
       }
 
+      public abstract string AppStartUpState { get; }
+
       public IFormsMessenger Messenger { get; set; }
 
       public void GoToAppState<T>(string newState, T payload = default(T), bool preventStackPush = false)
@@ -81,8 +83,6 @@ namespace SharedForms.Common.Navigation
          // Not awaiting here because we do not directly change the Application.Current.MainPage.  That is done through a message.
          RespondToAppStateChange(newState, payload, preventStackPush);
       }
-
-      protected abstract void RespondToAppStateChange(string newState, object payload, bool preventStackPush);
 
       public string CurrentAppState { get; private set; }
 
@@ -96,17 +96,13 @@ namespace SharedForms.Common.Navigation
 
       public abstract void GoToLandingPage(bool preventStackPush = true);
 
-      public abstract string AppStartUpState { get; }
-
-      public class AppStartUpMessage : NoPayloadMessage
-      {
-      }
-
       public void Dispose()
       {
          ReleaseUnmanagedResources();
          GC.SuppressFinalize(this);
       }
+
+      protected abstract void RespondToAppStateChange(string newState, object payload, bool preventStackPush);
 
       protected void CheckAgainstLastPage(Type pageType, Func<Page> pageCreator, Func<IViewModelBase> viewModelCreator,
          bool preventStackPush)
@@ -142,6 +138,10 @@ namespace SharedForms.Common.Navigation
       ~StateMachineBase()
       {
          ReleaseUnmanagedResources();
+      }
+
+      public class AppStartUpMessage : NoPayloadMessage
+      {
       }
    }
 }
