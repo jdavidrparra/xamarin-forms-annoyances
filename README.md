@@ -26,7 +26,7 @@ So Much IOC; So Little Inversion or Control
 
 ![123](https://marcusts.com/wp-content/uploads/2018/04/SecondViewModelIsStillAlive.png)
 
-See the complete blog at https://marcusts.com/2018/04/09/the-ioc-container-anti-pattern/.
+See the complete blog at https://marcusts.com/2018/03/27/the-foreground-await-async-anti-pattern/.
 
 
 
