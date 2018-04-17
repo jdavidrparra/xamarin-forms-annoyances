@@ -1,4 +1,4 @@
-# Xamarin Forms Annoyances( async/ await anti-petters example)
+# Xamarin Forms Annoyances( async/ await anti-pettern example)
 
 Lessons Learned While Coding With Xamarin.Forms.
 
